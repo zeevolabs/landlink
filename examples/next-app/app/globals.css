@@ -1,0 +1,19 @@
+@import "@zeevolabs/landlink/styles.css";
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+.highlight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: var(--ll-radius);
+  background: color-mix(in srgb, var(--ll-accent) 14%, transparent);
+  color: var(--ll-fg);
+  font-size: 0.9rem;
+}

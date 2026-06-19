@@ -1,0 +1,142 @@
+.ll-root {
+  background: var(--ll-bg);
+  color: var(--ll-fg);
+  font-family: var(--ll-font);
+  min-height: 100%;
+  padding: 48px 20px;
+  box-sizing: border-box;
+}
+
+.ll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: var(--ll-max-width);
+  margin: 0 auto;
+}
+
+.ll-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.ll-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid var(--ll-border);
+}
+
+.ll-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.ll-verified {
+  color: var(--ll-accent);
+  font-size: 0.9em;
+}
+
+.ll-bio {
+  margin: 0;
+  color: var(--ll-muted);
+  max-width: 36ch;
+  line-height: 1.5;
+}
+
+.ll-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ll-heading {
+  margin: 12px 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ll-muted);
+  text-align: center;
+}
+
+.ll-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: var(--ll-radius);
+  border: 1px solid var(--ll-accent);
+  background: var(--ll-accent);
+  color: var(--ll-accent-contrast);
+  box-shadow: var(--ll-shadow);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.08s ease, opacity 0.15s ease;
+}
+
+.ll-link:hover {
+  opacity: 0.92;
+}
+
+.ll-link:active {
+  transform: scale(0.99);
+}
+
+.ll-link[data-variant="outline"] {
+  background: transparent;
+  color: var(--ll-fg);
+  border-color: var(--ll-border);
+}
+
+.ll-link-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  line-height: 1.25;
+}
+
+.ll-link-description {
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.78;
+}
+
+.ll-social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ll-social-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--ll-border);
+  color: var(--ll-fg);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.ll-image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--ll-radius);
+  display: block;
+}
+
+.ll-image-link {
+  display: block;
+}
