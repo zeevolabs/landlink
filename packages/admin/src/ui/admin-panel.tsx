@@ -407,6 +407,7 @@ function MobileTabs({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 
 function AdminShell({ registry, basePath, onLogout }: { registry: Registry; basePath: string; onLogout: () => void }) {
   const [config, setConfig] = useState<Config | null>(null);
+  const [savedConfig, setSavedConfig] = useState<Config | null>(null);
   const [schemas, setSchemas] = useState<SchemaMap>({});
   const [blockTypes, setBlockTypes] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -421,6 +422,7 @@ function AdminShell({ registry, basePath, onLogout }: { registry: Registry; base
     ]).then(async ([cfg, sch]) => {
       if (!cfg) cfg = await api<Config>(basePath, "/seed");
       setConfig(cfg);
+      setSavedConfig(cfg);
       setSchemas(sch.schemas);
       setBlockTypes(sch.types);
       setLoading(false);
@@ -470,6 +472,7 @@ function AdminShell({ registry, basePath, onLogout }: { registry: Registry; base
     setStatus(null);
     try {
       await api(basePath, "/config", "PUT", config);
+      setSavedConfig(config);
       setStatus({ text: "Salvo com sucesso", type: "success" });
       setTimeout(() => setStatus(null), 3000);
     } catch (e) {
@@ -478,6 +481,8 @@ function AdminShell({ registry, basePath, onLogout }: { registry: Registry; base
       setSaving(false);
     }
   };
+
+  const isDirty = JSON.stringify(config) !== JSON.stringify(savedConfig);
 
   if (loading) {
     return (
@@ -576,7 +581,7 @@ function AdminShell({ registry, basePath, onLogout }: { registry: Registry; base
 
       <div className="lla-save-bar">
         <div className="lla-save-bar-inner">
-          <button type="button" className="lla-btn-primary" onClick={save} disabled={saving}>
+          <button type="button" className="lla-btn-primary" onClick={save} disabled={saving || !isDirty}>
             {saving ? "Salvando..." : "Salvar"}
           </button>
           {status && <span className={`lla-save-status ${status.type}`}>{status.text}</span>}
