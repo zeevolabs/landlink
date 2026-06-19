@@ -10,9 +10,11 @@ export interface LandlinkProps {
   config: Config;
   registry?: Registry;
   className?: string;
+  /** Path to the admin panel. Renders a subtle "Gerenciar" link in the footer. */
+  adminPath?: string;
 }
 
-export function Landlink({ config, registry = defaultRegistry, className }: LandlinkProps) {
+export function Landlink({ config, registry = defaultRegistry, className, adminPath }: LandlinkProps) {
   const rootClass = ["ll-root", className].filter(Boolean).join(" ");
 
   return (
@@ -27,6 +29,11 @@ export function Landlink({ config, registry = defaultRegistry, className }: Land
             return <Block key={index} {...block} />;
           })}
         </div>
+        {adminPath && (
+          <footer className="ll-footer">
+            <a href={adminPath} className="ll-admin-link">Gerenciar</a>
+          </footer>
+        )}
       </main>
     </div>
   );

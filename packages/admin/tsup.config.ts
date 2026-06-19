@@ -1,10 +1,14 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: { index: "src/index.ts" },
+  entry: {
+    index: "src/index.ts",
+    ui: "src/ui/index.tsx",
+    styles: "src/ui/styles.css",
+  },
   format: ["esm", "cjs"],
-  dts: { entry: "src/index.ts" },
+  dts: { entry: { index: "src/index.ts", ui: "src/ui/index.tsx" } },
   clean: true,
   treeshake: true,
-  external: ["@zeevolabs/landlink", "zod"],
+  external: ["@zeevolabs/landlink", "react", "react-dom", "zod"],
 });

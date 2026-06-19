@@ -11,11 +11,15 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./ui": {
+      "types": "./dist/ui.d.ts",
+      "import": "./dist/ui.js",
+      "require": "./dist/ui.cjs"
+    },
+    "./ui.css": "./dist/styles.css"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "sideEffects": ["*.css"],
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
@@ -23,10 +27,15 @@
   },
   "peerDependencies": {
     "@zeevolabs/landlink": "workspace:*",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@zeevolabs/landlink": "workspace:*",
+    "@types/react": "^19.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8",

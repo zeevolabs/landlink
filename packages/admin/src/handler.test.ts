@@ -85,4 +85,35 @@ describe("createAdminHandler", () => {
     const res = await handler.PUT(unauthRequest("PUT"));
     expect(res.status).toBe(401);
   });
+
+  it("loadConfig returns stored config when available", async () => {
+    const handler = createAdminHandler({
+      store: createMockStore(validConfig),
+      password: "secret",
+      registry,
+    });
+    const config = await handler.loadConfig();
+    expect(config).toMatchObject(validConfig);
+  });
+
+  it("loadConfig returns fallback when store is empty", async () => {
+    const fallbackConfig = { profile: { name: "Fallback" }, blocks: [] };
+    const handler = createAdminHandler({
+      store: createMockStore(),
+      password: "secret",
+      registry,
+      fallback: () => fallbackConfig,
+    });
+    const config = await handler.loadConfig();
+    expect(config).toEqual(fallbackConfig);
+  });
+
+  it("loadConfig throws when no store data and no fallback", async () => {
+    const handler = createAdminHandler({
+      store: createMockStore(),
+      password: "secret",
+      registry,
+    });
+    await expect(handler.loadConfig()).rejects.toThrow("No config in store and no fallback provided");
+  });
 });
