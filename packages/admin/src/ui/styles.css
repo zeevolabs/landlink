@@ -335,6 +335,7 @@
   --lla-success: #16a34a;
   --lla-radius: 10px;
   --lla-font: "Inter", system-ui, sans-serif;
+  --lla-tab-bar-h: 64px;
 
   font-family: var(--lla-font);
   color: var(--lla-text);
@@ -397,7 +398,7 @@
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  padding: 16px 16px 120px;
+  padding: 16px 16px calc(var(--lla-tab-bar-h) + 80px);
   margin: 0 auto;
 }
 
@@ -455,6 +456,9 @@
 @media (min-width: 768px) {
   .lla-layout {
     flex-direction: row;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   .lla-sidebar {
@@ -467,9 +471,7 @@
     padding: 24px 12px;
     border-right: 1px solid var(--lla-border);
     background: var(--lla-surface);
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    height: 100%;
   }
 
   .lla-sidebar-title {
@@ -485,6 +487,8 @@
   .lla-main {
     max-width: 600px;
     padding: 32px 24px 100px;
+    overflow-y: auto;
+    height: 100%;
   }
 
   .lla-tabs-mobile {
@@ -507,6 +511,10 @@
 
 /* ===== DESKTOP (1024px+) ===== */
 @media (min-width: 1024px) {
+  .lla-save-bar {
+    right: 380px;
+  }
+
   .lla-preview-panel {
     display: block;
     width: 380px;
@@ -514,9 +522,7 @@
     flex-shrink: 0;
     border-left: 1px solid var(--lla-border);
     background: var(--lla-bg);
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    height: 100%;
     overflow-y: auto;
   }
 }
@@ -548,6 +554,15 @@
   background: var(--lla-bg);
   color: var(--lla-accent);
   font-weight: 600;
+}
+
+.lla-sidebar-spacer {
+  flex: 1;
+}
+
+.lla-sidebar-logout:hover {
+  color: var(--lla-danger);
+  background: rgba(220, 38, 38, 0.06);
 }
 
 .lla-sidebar-btn svg {
@@ -867,7 +882,7 @@ textarea.lla-form-input {
 /* --- Save bar --- */
 .lla-save-bar {
   position: fixed;
-  bottom: calc(52px + env(safe-area-inset-bottom));
+  bottom: calc(var(--lla-tab-bar-h) + env(safe-area-inset-bottom));
   left: 0;
   right: 0;
   display: flex;
@@ -965,5 +980,11 @@ textarea.lla-form-input {
 @media (min-width: 480px) {
   .lla-theme-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 359px) {
+  .lla-gate-card {
+    padding: 24px 20px;
   }
 }

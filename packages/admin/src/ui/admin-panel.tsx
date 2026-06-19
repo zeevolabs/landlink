@@ -117,6 +117,14 @@ function IconArrowDown() {
   );
 }
 
+function IconLogout() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+    </svg>
+  );
+}
+
 function IconPlus() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -366,7 +374,7 @@ const TABS: { id: Tab; label: string; icon: () => React.ReactNode }[] = [
   { id: "settings", label: "Config", icon: IconSettings },
 ];
 
-function Sidebar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+function Sidebar({ tab, onTab, onLogout }: { tab: Tab; onTab: (t: Tab) => void; onLogout: () => void }) {
   return (
     <nav className="lla-sidebar">
       <p className="lla-sidebar-title">Admin</p>
@@ -375,6 +383,10 @@ function Sidebar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
           <t.icon />{t.label}
         </button>
       ))}
+      <div className="lla-sidebar-spacer" />
+      <button type="button" className="lla-sidebar-btn lla-sidebar-logout" onClick={onLogout}>
+        <IconLogout />Sair
+      </button>
     </nav>
   );
 }
@@ -393,7 +405,7 @@ function MobileTabs({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 
 // --- Main Admin Shell ---
 
-function AdminShell({ registry, basePath }: { registry: Registry; basePath: string }) {
+function AdminShell({ registry, basePath, onLogout }: { registry: Registry; basePath: string; onLogout: () => void }) {
   const [config, setConfig] = useState<Config | null>(null);
   const [schemas, setSchemas] = useState<SchemaMap>({});
   const [blockTypes, setBlockTypes] = useState<string[]>([]);
@@ -486,7 +498,7 @@ function AdminShell({ registry, basePath }: { registry: Registry; basePath: stri
   return (
     <div className="lla-admin-root">
       <div className="lla-layout">
-        <Sidebar tab={tab} onTab={setTab} />
+        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} />
         <main className="lla-main">
           {tab === "content" && (
             <>
@@ -585,6 +597,11 @@ export function AdminPanel({ registry, basePath = "/api/admin" }: AdminPanelProp
     }
   }, [basePath]);
 
+  const handleLogout = () => {
+    sessionStorage.removeItem("ll-admin-pw");
+    setAuthed(false);
+  };
+
   if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} />;
-  return <AdminShell registry={registry} basePath={basePath} />;
+  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} />;
 }

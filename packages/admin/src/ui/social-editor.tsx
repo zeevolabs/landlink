@@ -95,9 +95,13 @@ export function SocialEditor({ items, onChange }: SocialEditorProps) {
   useEffect(() => {
     if (openAdd && addBtnRef.current) {
       const rect = addBtnRef.current.getBoundingClientRect();
-      setMenuPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+      const estimatedHeight = availablePlatforms.length * 48 + 8;
+      const top = rect.bottom + 4 + estimatedHeight > window.innerHeight
+        ? Math.max(8, rect.top - estimatedHeight - 4)
+        : rect.bottom + 4;
+      setMenuPos({ top, left: rect.left, width: rect.width });
     }
-  }, [openAdd]);
+  }, [openAdd, availablePlatforms.length]);
 
   useEffect(() => {
     if (!openAdd) return;

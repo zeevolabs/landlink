@@ -35,7 +35,9 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
   useEffect(() => {
     if (open && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      setPos({ top: rect.bottom + 4, left: rect.left });
+      const dropdownWidth = 202;
+      const left = Math.min(rect.left, window.innerWidth - dropdownWidth - 8);
+      setPos({ top: rect.bottom + 4, left: Math.max(8, left) });
     }
   }, [open]);
 
