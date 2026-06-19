@@ -1,0 +1,63 @@
+{
+  "name": "@zeevolabs/landlink",
+  "version": "0.2.0",
+  "description": "Config-driven link-in-bio landing pages for React and Next.js.",
+  "license": "MIT",
+  "type": "module",
+  "repository": { "type": "git", "url": "git+https://github.com/zeevolabs/landlink.git" },
+  "homepage": "https://github.com/zeevolabs/landlink#readme",
+  "bugs": "https://github.com/zeevolabs/landlink/issues",
+  "publishConfig": { "access": "public" },
+  "sideEffects": ["*.css"],
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "jsdom": "^25.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "keywords": [
+    "link-in-bio",
+    "landing-page",
+    "linktree",
+    "react",
+    "nextjs",
+    "config-driven",
+    "component-registry",
+    "css-variables",
+    "server-components",
+    "static-site",
+    "zod"
+  ]
+}

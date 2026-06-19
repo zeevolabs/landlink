@@ -1,0 +1,35 @@
+{
+  "name": "@zeevolabs/landlink-admin",
+  "version": "0.1.0",
+  "description": "Optional admin panel extension for Landlink with pluggable config storage.",
+  "license": "MIT",
+  "type": "module",
+  "publishConfig": { "access": "public" },
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@zeevolabs/landlink": "workspace:*",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@zeevolabs/landlink": "workspace:*",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "zod": "^3.24.1"
+  }
+}
