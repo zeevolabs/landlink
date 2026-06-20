@@ -564,7 +564,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
               </div>
 
               {config.blocks.map((block, i) => {
-                if (block.type !== "socials") return null;
+                if (block.type !== "social") return null;
                 return (
                   <div key={`socials-${i}`} className="lla-section">
                     <h3 className="lla-section-title">Redes sociais</h3>
@@ -578,8 +578,8 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
               <div className="lla-section">
                 <h3 className="lla-section-title">Links</h3>
                 {config.blocks.map((block, i) => {
-                  if (block.type === "socials") return null;
-                  const nonSocial = config.blocks.filter((b) => b.type !== "socials");
+                  if (block.type === "social") return null;
+                  const nonSocial = config.blocks.filter((b) => b.type !== "social");
                   const idx = nonSocial.indexOf(block);
                   return (
                     <BlockCard key={`${block.type}-${i}`} block={block} schema={schemas[block.type] ?? []}
@@ -588,7 +588,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
                       isFirst={idx === 0} isLast={idx === nonSocial.length - 1} />
                   );
                 })}
-                <AddBlockDropdown types={blockTypes.filter((t) => t !== "socials")} onAdd={addBlock} />
+                <AddBlockDropdown types={blockTypes.filter((t) => t !== "social")} onAdd={addBlock} />
               </div>
             </>
           )}
