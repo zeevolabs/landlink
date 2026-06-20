@@ -771,6 +771,59 @@ select.lla-form-input {
   transform: translateX(20px);
 }
 
+/* --- Range field --- */
+.lla-range-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lla-range-input {
+  flex: 1;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--lla-border);
+  outline: none;
+  cursor: pointer;
+}
+
+.lla-range-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--lla-accent);
+  border: 2px solid var(--lla-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.lla-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.lla-range-input::-moz-range-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--lla-accent);
+  border: 2px solid var(--lla-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.lla-range-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--lla-text-secondary);
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 /* --- Color field --- */
 .lla-color-field {
   display: flex;

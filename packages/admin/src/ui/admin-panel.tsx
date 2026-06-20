@@ -382,38 +382,113 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
 
 // --- Theme Editor ---
 
-const THEME_FIELDS = [
-  { key: "bg", label: "Fundo", color: true },
-  { key: "fg", label: "Texto", color: true },
-  { key: "accent", label: "Destaque", color: true },
-  { key: "accentContrast", label: "Texto destaque", color: true },
-  { key: "muted", label: "Texto secundário", color: true },
-  { key: "border", label: "Borda", color: false },
-  { key: "radius", label: "Arredondamento", color: false },
-  { key: "shadow", label: "Sombra", color: false },
-  { key: "font", label: "Fonte", color: false },
-  { key: "maxWidth", label: "Largura máxima", color: false },
+const COLOR_FIELDS = [
+  { key: "bg", label: "Fundo" },
+  { key: "fg", label: "Texto" },
+  { key: "accent", label: "Destaque" },
+  { key: "accentContrast", label: "Texto destaque" },
+  { key: "muted", label: "Texto secundário" },
+  { key: "border", label: "Borda" },
 ] as const;
+
+const SHADOW_PRESETS = [
+  { label: "Nenhuma", value: "none" },
+  { label: "Sutil", value: "0 1px 3px rgba(0,0,0,0.08)" },
+  { label: "Média", value: "0 4px 12px rgba(0,0,0,0.1)" },
+  { label: "Forte", value: "0 8px 24px rgba(0,0,0,0.15)" },
+  { label: "Retro", value: "3px 4px 0 0 #000" },
+] as const;
+
+const FONT_OPTIONS = [
+  { label: "Inter", value: "'Inter', sans-serif" },
+  { label: "System", value: "system-ui, sans-serif" },
+  { label: "Roboto", value: "'Roboto', sans-serif" },
+  { label: "Open Sans", value: "'Open Sans', sans-serif" },
+  { label: "Lato", value: "'Lato', sans-serif" },
+  { label: "Montserrat", value: "'Montserrat', sans-serif" },
+  { label: "Poppins", value: "'Poppins', sans-serif" },
+  { label: "Playfair Display", value: "'Playfair Display', serif" },
+  { label: "Georgia", value: "Georgia, serif" },
+  { label: "Monospace", value: "monospace" },
+] as const;
+
+function ColorField({ label, value, onChange }: {
+  label: string; value: string; onChange: (v: string) => void;
+}) {
+  const validHex = /^#[0-9a-fA-F]{6}$/.test(value) ? value : "#000000";
+  return (
+    <div className="lla-form-field">
+      <span className="lla-form-label">{label}</span>
+      <div className="lla-color-field">
+        <div className="lla-color-swatch">
+          <input type="color" aria-label={label} value={validHex} onChange={(e) => onChange(e.target.value)} />
+        </div>
+        <input type="text" className="lla-form-input" value={value} onChange={(e) => onChange(e.target.value)} />
+      </div>
+    </div>
+  );
+}
+
+function RangeField({ label, value, onChange, min, max, step, unit }: {
+  label: string; value: string; onChange: (v: string) => void;
+  min: number; max: number; step: number; unit: string;
+}) {
+  const num = Math.min(Math.max(parseInt(value) || min, min), max);
+  return (
+    <div className="lla-form-field">
+      <span className="lla-form-label">{label}</span>
+      <div className="lla-range-field">
+        <input
+          type="range"
+          className="lla-range-input"
+          min={min}
+          max={max}
+          step={step}
+          value={num}
+          aria-label={label}
+          onChange={(e) => onChange(`${e.target.value}${unit}`)}
+        />
+        <span className="lla-range-value">{num}{unit}</span>
+      </div>
+    </div>
+  );
+}
+
+function PresetField({ label, value, onChange, presets }: {
+  label: string; value: string; onChange: (v: string) => void;
+  presets: readonly { label: string; value: string }[];
+}) {
+  const isCustom = !presets.some((p) => p.value === value);
+  return (
+    <div className="lla-form-field">
+      <span className="lla-form-label">{label}</span>
+      <select
+        className="lla-form-input"
+        aria-label={label}
+        value={isCustom ? "__custom__" : value}
+        onChange={(e) => { if (e.target.value !== "__custom__") onChange(e.target.value); }}
+      >
+        {presets.map((p) => (
+          <option key={p.value} value={p.value}>{p.label}</option>
+        ))}
+        {isCustom && <option value="__custom__">Personalizado</option>}
+      </select>
+    </div>
+  );
+}
 
 function ThemeTab({ theme, onChange }: {
   theme: Record<string, string>; onChange: (t: Record<string, string>) => void;
 }) {
+  const set = (key: string, value: string) => onChange({ ...theme, [key]: value });
   return (
     <>
       <div className="lla-section">
         <h3 className="lla-section-title">Cores</h3>
         <div className="lla-card">
           <div className="lla-theme-grid">
-            {THEME_FIELDS.filter((f) => f.color).map(({ key, label }) => (
-              <div key={key} className="lla-form-field">
-                <span className="lla-form-label">{label}</span>
-                <div className="lla-color-field">
-                  <div className="lla-color-swatch">
-                    <input type="color" value={theme[key] ?? "#000000"} onChange={(e) => onChange({ ...theme, [key]: e.target.value })} />
-                  </div>
-                  <input type="text" className="lla-form-input" value={theme[key] ?? ""} onChange={(e) => onChange({ ...theme, [key]: e.target.value })} />
-                </div>
-              </div>
+            {COLOR_FIELDS.map(({ key, label }) => (
+              <ColorField key={key} label={label} value={theme[key] ?? ""} onChange={(v) => set(key, v)} />
             ))}
           </div>
         </div>
@@ -421,9 +496,10 @@ function ThemeTab({ theme, onChange }: {
       <div className="lla-section">
         <h3 className="lla-section-title">Estilo</h3>
         <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {THEME_FIELDS.filter((f) => !f.color).map(({ key, label }) => (
-            <FormField key={key} label={label} value={theme[key] ?? ""} onChange={(v) => onChange({ ...theme, [key]: v })} />
-          ))}
+          <RangeField label="Arredondamento" value={theme.radius ?? "8px"} onChange={(v) => set("radius", v)} min={0} max={32} step={1} unit="px" />
+          <PresetField label="Sombra" value={theme.shadow ?? "none"} onChange={(v) => set("shadow", v)} presets={SHADOW_PRESETS} />
+          <PresetField label="Fonte" value={theme.font ?? "'Inter', sans-serif"} onChange={(v) => set("font", v)} presets={FONT_OPTIONS} />
+          <RangeField label="Largura máxima" value={theme.maxWidth ?? "480px"} onChange={(v) => set("maxWidth", v)} min={320} max={720} step={10} unit="px" />
         </div>
       </div>
     </>
