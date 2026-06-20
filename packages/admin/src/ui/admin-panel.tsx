@@ -186,13 +186,17 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
     <div className="lla-admin-root">
       <div className="lla-gate">
         <form onSubmit={handleSubmit} className="lla-gate-card">
-          <h1 className="lla-gate-title">Landlink Admin</h1>
+          <div className="lla-gate-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+          </div>
           <div className="lla-form-field">
             <input
               type="password"
               value={pw}
               onChange={(e) => { setPw(e.target.value); setError(false); }}
-              placeholder="Senha de acesso"
+              placeholder="Senha"
               className="lla-form-input"
               autoFocus
             />
