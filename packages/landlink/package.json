@@ -1,15 +1,24 @@
 {
   "name": "@zeevolabs/landlink",
-  "version": "0.2.0",
+  "version": "0.3.0-alpha.2",
   "description": "Config-driven link-in-bio landing pages for React and Next.js.",
   "license": "MIT",
   "type": "module",
-  "repository": { "type": "git", "url": "git+https://github.com/zeevolabs/landlink.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeevolabs/landlink.git"
+  },
   "homepage": "https://github.com/zeevolabs/landlink#readme",
   "bugs": "https://github.com/zeevolabs/landlink/issues",
-  "publishConfig": { "access": "public" },
-  "sideEffects": ["*.css"],
-  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

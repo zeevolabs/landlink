@@ -1,11 +1,15 @@
 {
   "name": "@zeevolabs/landlink-store-vercel-blob",
-  "version": "0.1.0",
+  "version": "0.2.0-alpha.2",
   "description": "Vercel Blob Storage config store adapter for Landlink Admin.",
   "license": "MIT",
   "type": "module",
-  "publishConfig": { "access": "public" },
-  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -24,7 +28,7 @@
     "@vercel/blob": "^0.27.0"
   },
   "peerDependencies": {
-    "@zeevolabs/landlink-admin": "workspace:*"
+    "@zeevolabs/landlink-admin": ">=0.2.0-alpha.1"
   },
   "devDependencies": {
     "@zeevolabs/landlink-admin": "workspace:*",
