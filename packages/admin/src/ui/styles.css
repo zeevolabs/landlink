@@ -10,7 +10,7 @@
 .lla-preview-device {
   width: 100%;
   max-width: 320px;
-  height: 580px;
+  height: clamp(580px, calc(100dvh - 72px), 900px);
   border-radius: 36px;
   border: 6px solid #1a1a1a;
   background: #1a1a1a;
