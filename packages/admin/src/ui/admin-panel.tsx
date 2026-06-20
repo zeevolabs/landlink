@@ -211,8 +211,8 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
 
 // --- Field Components ---
 
-function FormField({ label, value, onChange, multiline, placeholder }: {
-  label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string;
+function FormField({ label, value, onChange, multiline, placeholder, type = "text" }: {
+  label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string; type?: "text" | "url";
 }) {
   return (
     <div className="lla-form-field">
@@ -220,8 +220,42 @@ function FormField({ label, value, onChange, multiline, placeholder }: {
       {multiline ? (
         <textarea className="lla-form-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
       ) : (
-        <input type="text" className="lla-form-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+        <input type={type} className="lla-form-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
       )}
+    </div>
+  );
+}
+
+function SelectField({ label, value, onChange, options }: {
+  label: string; value: string; onChange: (v: string) => void; options: string[];
+}) {
+  return (
+    <div className="lla-form-field">
+      <span className="lla-form-label">{label}</span>
+      <select className="lla-form-input" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function ToggleField({ label, value, onChange }: {
+  label: string; value: boolean; onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="lla-form-field">
+      <span className="lla-form-label">{label}</span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={value}
+        className={`lla-toggle ${value ? "active" : ""}`}
+        onClick={() => onChange(!value)}
+      >
+        <span className="lla-toggle-thumb" />
+      </button>
     </div>
   );
 }
@@ -303,12 +337,35 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
                 </div>
               );
             }
+            if (field.type === "enum" && field.options) {
+              return (
+                <SelectField
+                  key={field.name}
+                  label={field.name}
+                  value={String(block[field.name] ?? field.options[0])}
+                  onChange={(v) => onChange({ ...block, [field.name]: v })}
+                  options={field.options}
+                />
+              );
+            }
+            if (field.type === "boolean") {
+              return (
+                <ToggleField
+                  key={field.name}
+                  label={field.name}
+                  value={Boolean(block[field.name])}
+                  onChange={(v) => onChange({ ...block, [field.name]: v })}
+                />
+              );
+            }
+            const isUrl = ["url", "href", "src"].includes(field.name);
             return (
               <FormField
                 key={field.name}
                 label={field.name}
                 value={String(block[field.name] ?? "")}
                 onChange={(v) => onChange({ ...block, [field.name]: v })}
+                type={isUrl ? "url" : "text"}
               />
             );
           })}
@@ -488,7 +545,14 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
       if (!c) return c;
       const block: Block = { type };
       const schema = schemas[type];
-      if (schema) { for (const f of schema) { block[f.name] = f.type === "array" ? [] : ""; } }
+      if (schema) {
+        for (const f of schema) {
+          if (f.type === "array") block[f.name] = [];
+          else if (f.type === "boolean") block[f.name] = false;
+          else if (f.type === "enum" && f.options?.length) block[f.name] = f.options[0];
+          else block[f.name] = "";
+        }
+      }
       return { ...c, blocks: [...c.blocks, block] };
     });
   }, [schemas]);
