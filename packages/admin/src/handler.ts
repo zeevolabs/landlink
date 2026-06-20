@@ -8,9 +8,10 @@ export interface AdminHandlerOptions {
   password: string | undefined;
   registry: Registry;
   fallback?: () => Config;
+  uploadFile?: (file: File) => Promise<string>;
 }
 
-export function createAdminHandler({ store, password, registry, fallback }: AdminHandlerOptions) {
+export function createAdminHandler({ store, password, registry, fallback, uploadFile }: AdminHandlerOptions) {
   async function GET(request: Request) {
     const auth = checkPassword(request, password);
     if (!auth.ok) return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -36,6 +37,28 @@ export function createAdminHandler({ store, password, registry, fallback }: Admi
     return Response.json({ ok: true });
   }
 
+  async function POST(request: Request) {
+    if (!uploadFile) {
+      return Response.json({ error: "Upload not configured" }, { status: 501 });
+    }
+    const auth = checkPassword(request, password);
+    if (!auth.ok) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    const form = await request.formData();
+    const file = form.get("file");
+    if (!file || !(file instanceof File)) {
+      return Response.json({ error: "No file" }, { status: 400 });
+    }
+
+    try {
+      const url = await uploadFile(file);
+      return Response.json({ url });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Upload failed";
+      return Response.json({ error: message }, { status: 500 });
+    }
+  }
+
   async function loadConfig(): Promise<Config> {
     try {
       const raw = await store.get();
@@ -50,5 +73,5 @@ export function createAdminHandler({ store, password, registry, fallback }: Admi
     throw new Error("No config in store and no fallback provided");
   }
 
-  return { GET, PUT, loadConfig };
+  return { GET, PUT, POST, loadConfig };
 }

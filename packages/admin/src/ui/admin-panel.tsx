@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Landlink } from "@zeevolabs/landlink";
 import type { Registry } from "@zeevolabs/landlink";
 import type { FieldDescriptor } from "../zod-to-fields";
+import { AvatarUpload } from "./avatar-upload";
 import { IconPicker } from "./icon-picker";
 import { PreviewFrame } from "./preview-frame";
 import { SocialEditor } from "./social-editor";
@@ -24,14 +25,36 @@ interface Config {
 type SchemaMap = Record<string, FieldDescriptor[]>;
 type Tab = "content" | "theme" | "settings";
 
+export type UploadAvatarFn = (file: File) => Promise<string>;
+
 export interface AdminPanelProps {
   registry: Registry;
   basePath?: string;
+  onUploadAvatar?: UploadAvatarFn;
 }
 
 function getPassword(): string {
   if (typeof window === "undefined") return "";
   return sessionStorage.getItem("ll-admin-pw") ?? "";
+}
+
+export function createAdminUploader(basePath = "/api/admin"): UploadAvatarFn {
+  return async (file: File) => {
+    const password = getPassword();
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch(`${basePath}/upload`, {
+      method: "POST",
+      headers: { "x-admin-password": password },
+      body: form,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error((err as { error?: string }).error ?? "Erro ao enviar imagem");
+    }
+    const data = await res.json();
+    return (data as { url: string }).url;
+  };
 }
 
 async function api<T>(basePath: string, path: string, method = "GET", body?: unknown): Promise<T> {
@@ -405,7 +428,7 @@ function MobileTabs({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 
 // --- Main Admin Shell ---
 
-function AdminShell({ registry, basePath, onLogout }: { registry: Registry; basePath: string; onLogout: () => void }) {
+function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry: Registry; basePath: string; onLogout: () => void; onUploadAvatar?: UploadAvatarFn }) {
   const [config, setConfig] = useState<Config | null>(null);
   const [savedConfig, setSavedConfig] = useState<Config | null>(null);
   const [schemas, setSchemas] = useState<SchemaMap>({});
@@ -523,7 +546,18 @@ function AdminShell({ registry, basePath, onLogout }: { registry: Registry; base
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     <FormField label="Nome" value={config.profile.name} onChange={(v) => updateProfile("name", v)} />
-                    <FormField label="Avatar (URL)" value={config.profile.avatar ?? ""} onChange={(v) => updateProfile("avatar", v)} placeholder="/avatar.jpg" />
+                    {onUploadAvatar ? (
+                      <div className="lla-form-field">
+                        <span className="lla-form-label">Foto de perfil</span>
+                        <AvatarUpload
+                          value={config.profile.avatar ?? ""}
+                          onChange={(v) => updateProfile("avatar", v)}
+                          onUpload={onUploadAvatar}
+                        />
+                      </div>
+                    ) : (
+                      <FormField label="Avatar (URL)" value={config.profile.avatar ?? ""} onChange={(v) => updateProfile("avatar", v)} placeholder="/avatar.jpg" />
+                    )}
                     <FormField label="Bio" value={config.profile.bio ?? ""} onChange={(v) => updateProfile("bio", v)} multiline />
                   </div>
                 </div>
@@ -593,7 +627,7 @@ function AdminShell({ registry, basePath, onLogout }: { registry: Registry; base
 
 // --- Exported Component ---
 
-export function AdminPanel({ registry, basePath = "/api/admin" }: AdminPanelProps) {
+export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar }: AdminPanelProps) {
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
@@ -608,5 +642,5 @@ export function AdminPanel({ registry, basePath = "/api/admin" }: AdminPanelProp
   };
 
   if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} />;
-  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} />;
+  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} onUploadAvatar={onUploadAvatar} />;
 }

@@ -1,5 +1,9 @@
 export { AdminPanel } from "./admin-panel";
 export type { AdminPanelProps } from "./admin-panel";
+export type { UploadAvatarFn } from "./admin-panel";
+export { createAdminUploader } from "./admin-panel";
+export { AvatarUpload } from "./avatar-upload";
+export type { AvatarUploadProps } from "./avatar-upload";
 export { PreviewFrame } from "./preview-frame";
 export type { PreviewFrameProps } from "./preview-frame";
 export { IconPicker } from "./icon-picker";

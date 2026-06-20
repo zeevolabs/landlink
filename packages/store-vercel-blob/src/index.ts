@@ -10,7 +10,7 @@ export interface VercelBlobStoreOptions {
 
 const DEFAULT_PATH = "landlink/config.json";
 
-export function createVercelBlobStore(options?: VercelBlobStoreOptions): ConfigStore {
+export function createVercelBlobStore(options?: VercelBlobStoreOptions): ConfigStore & { uploadFile: (file: File) => Promise<string> } {
   const token = options?.token ?? process.env.BLOB_READ_WRITE_TOKEN ?? "";
   const path = options?.path ?? DEFAULT_PATH;
 
@@ -35,6 +35,14 @@ export function createVercelBlobStore(options?: VercelBlobStoreOptions): ConfigS
         token,
         addRandomSuffix: false,
       });
+    },
+    async uploadFile(file: File) {
+      const blob = await put(`landlink/avatars/${Date.now()}-${file.name}`, file, {
+        access: "public",
+        contentType: file.type,
+        token,
+      });
+      return blob.url;
     },
   };
 }
