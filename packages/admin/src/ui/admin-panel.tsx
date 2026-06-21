@@ -191,6 +191,7 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
           </div>
+          <input type="text" name="username" autoComplete="username" value="admin" readOnly hidden aria-hidden="true" />
           <div className="lla-form-field">
             <input
               type="password"
