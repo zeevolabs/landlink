@@ -98,6 +98,11 @@
   border-color: var(--ll-border);
 }
 
+.ll-link-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
 .ll-link-text {
   display: flex;
   flex-direction: column;
@@ -105,6 +110,11 @@
   text-align: center;
   gap: 2px;
   line-height: 1.25;
+  min-width: 0;
+}
+
+.ll-link-icon + .ll-link-text {
+  flex: 1;
 }
 
 .ll-link-description {
