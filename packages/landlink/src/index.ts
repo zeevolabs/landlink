@@ -13,6 +13,8 @@ export type { BlockDefinition, BlockProps } from "./blocks/define-block";
 export { defaultBlocks, headingBlock, imageBlock, linkBlock, socialBlock } from "./blocks";
 export type { HeadingBlock, ImageBlock, LinkBlock, SocialBlock } from "./blocks";
 
+export { iconPaths } from "./icons";
+
 export { applyTheme, resolveTheme } from "./theme/apply-theme";
 export type { Theme } from "./theme/apply-theme";
 export { defaultPreset, themePresets } from "./theme/presets";
