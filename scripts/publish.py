@@ -10,9 +10,15 @@ Usage:
     uv run scripts/publish.py release    # Remove -alpha.N, build, and publish as stable
     uv run scripts/publish.py publish    # Build and publish modified packages (no version change)
     uv run scripts/publish.py --dry-run  # Preview what would happen without executing
+
+Auth:
+    --otp=CODE       Use a one-time password for 2FA
+    --token=TOKEN    Use an npm access token (skips OTP)
+    NPM_TOKEN env    Fallback if --token is not passed
 """
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -24,8 +30,15 @@ PACKAGES_DIR = ROOT / "packages"
 BUILD_ORDER = ["landlink", "admin", "store-fs", "store-vercel-blob"]
 
 
+def _mask(cmd: list[str]) -> str:
+    return " ".join(
+        a.split("=")[0] + "=***" if "_authToken=" in a else a
+        for a in cmd
+    )
+
+
 def run(cmd: list[str], cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
-    print(f"  $ {' '.join(cmd)}")
+    print(f"  $ {_mask(cmd)}")
     return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, check=check)
 
 
@@ -117,7 +130,7 @@ def build_all() -> bool:
     return True
 
 
-def publish_modified(dry_run: bool = False, otp: str | None = None) -> None:
+def publish_modified(dry_run: bool = False, otp: str | None = None, token: str | None = None) -> None:
     print("\n=== Publishing packages ===\n")
     published = 0
     skipped = 0
@@ -144,7 +157,7 @@ def publish_modified(dry_run: bool = False, otp: str | None = None) -> None:
         print("Nothing to publish.")
         return
 
-    if not dry_run and not otp:
+    if not dry_run and not token and not otp:
         otp = input("\nEnter npm OTP code: ").strip()
 
     for pkg_dir, name, version, tag in to_publish:
@@ -155,13 +168,15 @@ def publish_modified(dry_run: bool = False, otp: str | None = None) -> None:
             continue
 
         cmd = ["npm", "publish", "--access", "public", "--tag", tag]
-        if otp:
+        if token:
+            cmd.append(f"--//registry.npmjs.org/:_authToken={token}")
+        elif otp:
             cmd.extend(["--otp", otp])
 
         result = run(cmd, cwd=pkg_dir, check=False)
         if result.returncode != 0:
             stderr = result.stderr.strip()
-            if "EOTP" in stderr:
+            if not token and "EOTP" in stderr:
                 print(f"  OTP expired, requesting new code...")
                 otp = input("  Enter new OTP code: ").strip()
                 result = run(
@@ -186,7 +201,7 @@ def cmd_build() -> None:
     print("\nAll packages built successfully.")
 
 
-def cmd_bump(dry_run: bool = False, otp: str | None = None) -> None:
+def cmd_bump(dry_run: bool = False, otp: str | None = None, token: str | None = None) -> None:
     print("\n=== Bumping alpha versions ===\n")
     for pkg_name in BUILD_ORDER:
         pkg_dir = PACKAGES_DIR / pkg_name
@@ -202,12 +217,12 @@ def cmd_bump(dry_run: bool = False, otp: str | None = None) -> None:
         resolve_workspace_refs()
         if not build_all():
             sys.exit(1)
-        publish_modified(dry_run, otp)
+        publish_modified(dry_run, otp, token)
     else:
         print("\n(dry run, no files changed)")
 
 
-def cmd_release(dry_run: bool = False, otp: str | None = None) -> None:
+def cmd_release(dry_run: bool = False, otp: str | None = None, token: str | None = None) -> None:
     print("\n=== Releasing stable versions ===\n")
     for pkg_name in BUILD_ORDER:
         pkg_dir = PACKAGES_DIR / pkg_name
@@ -226,16 +241,16 @@ def cmd_release(dry_run: bool = False, otp: str | None = None) -> None:
         resolve_workspace_refs()
         if not build_all():
             sys.exit(1)
-        publish_modified(dry_run, otp)
+        publish_modified(dry_run, otp, token)
     else:
         print("\n(dry run, no files changed)")
 
 
-def cmd_publish(dry_run: bool = False, otp: str | None = None) -> None:
+def cmd_publish(dry_run: bool = False, otp: str | None = None, token: str | None = None) -> None:
     resolve_workspace_refs()
     if not build_all():
         sys.exit(1)
-    publish_modified(dry_run, otp)
+    publish_modified(dry_run, otp, token)
 
 
 def main() -> None:
@@ -249,6 +264,21 @@ def main() -> None:
             otp = a.split("=", 1)[1]
     args = [a for a in args if not a.startswith("--otp=")]
 
+    env_file = ROOT / ".env"
+    if env_file.exists():
+        for line in env_file.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                if v:
+                    os.environ.setdefault(k.strip(), v.strip())
+
+    token = os.environ.get("NPM_TOKEN") or None
+    for a in args:
+        if a.startswith("--token="):
+            token = a.split("=", 1)[1]
+    args = [a for a in args if not a.startswith("--token=")]
+
     if not args:
         print(__doc__)
         sys.exit(0)
@@ -256,9 +286,9 @@ def main() -> None:
     command = args[0]
     commands = {
         "build": lambda: cmd_build(),
-        "bump": lambda: cmd_bump(dry_run, otp),
-        "release": lambda: cmd_release(dry_run, otp),
-        "publish": lambda: cmd_publish(dry_run, otp),
+        "bump": lambda: cmd_bump(dry_run, otp, token),
+        "release": lambda: cmd_release(dry_run, otp, token),
+        "publish": lambda: cmd_publish(dry_run, otp, token),
     }
 
     if command not in commands:
