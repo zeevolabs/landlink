@@ -194,6 +194,8 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
           <div className="lla-form-field">
             <input
               type="password"
+              name="password"
+              autoComplete="current-password"
               value={pw}
               onChange={(e) => { setPw(e.target.value); setError(false); }}
               placeholder="Senha"
@@ -204,6 +206,9 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
           {error && <p className="lla-gate-error">Senha incorreta</p>}
           <button type="submit" className="lla-btn-primary">Entrar</button>
         </form>
+        <a href="https://github.com/zeevolabs/landlink" target="_blank" rel="noopener noreferrer" className="lla-gate-footer">
+          powered by <strong>landlink</strong>
+        </a>
       </div>
     </div>
   );

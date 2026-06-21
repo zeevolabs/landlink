@@ -351,6 +351,7 @@
 /* --- Gate --- */
 .lla-gate {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
@@ -382,6 +383,23 @@
   margin: 0;
   font-size: 13px;
   text-align: center;
+}
+
+.lla-gate-footer {
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--lla-text-secondary);
+  opacity: 0.5;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.lla-gate-footer:hover {
+  opacity: 0.8;
+}
+
+.lla-gate-footer strong {
+  font-weight: 600;
 }
 
 /* --- Layout --- */
