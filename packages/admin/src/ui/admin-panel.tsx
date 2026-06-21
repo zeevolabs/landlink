@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Landlink } from "@zeevolabs/landlink";
-import type { Registry } from "@zeevolabs/landlink";
+import { Landlink, themePresets } from "@zeevolabs/landlink";
+import type { Registry, PresetName } from "@zeevolabs/landlink";
 import type { FieldDescriptor } from "../zod-to-fields";
 import { AvatarUpload } from "./avatar-upload";
 import { IconPicker } from "./icon-picker";
@@ -477,12 +477,67 @@ function PresetField({ label, value, onChange, presets }: {
   );
 }
 
+const PRESET_LABELS: Record<string, string> = {
+  light: "Claro",
+  dark: "Escuro",
+  rose: "Rosa",
+  mint: "Menta",
+  ocean: "Oceano",
+  sunset: "Pôr do sol",
+  lavender: "Lavanda",
+  sand: "Areia",
+  midnight: "Noturno",
+  candy: "Candy",
+};
+
+const BG_ANIMATION_OPTIONS = [
+  { label: "Nenhuma", value: "none" },
+  { label: "Gradiente", value: "ll-anim-gradient" },
+  { label: "Aurora", value: "ll-anim-aurora" },
+  { label: "Flutuante", value: "ll-anim-float" },
+] as const;
+
+function PresetPicker({ currentTheme, onSelect }: {
+  currentTheme: Record<string, string>;
+  onSelect: (tokens: Record<string, string>) => void;
+}) {
+  const presetEntries = Object.entries(themePresets) as [PresetName, Record<string, string>][];
+  const activePreset = presetEntries.find(([, tokens]) =>
+    Object.entries(tokens).every(([k, v]) => currentTheme[k] === v)
+  )?.[0];
+
+  return (
+    <div className="lla-preset-grid">
+      {presetEntries.map(([name, tokens]) => (
+        <button
+          key={name}
+          type="button"
+          className={`lla-preset-card ${activePreset === name ? "active" : ""}`}
+          onClick={() => onSelect({ ...tokens })}
+          aria-label={PRESET_LABELS[name] ?? name}
+        >
+          <div className="lla-preset-preview" style={{ background: tokens.bg }}>
+            <div className="lla-preset-avatar" style={{ background: tokens.accent, opacity: 0.8 }} />
+            <div className="lla-preset-bar" style={{ background: tokens.accent }} />
+            <div className="lla-preset-bar" style={{ background: tokens.border, borderColor: tokens.border }} />
+          </div>
+          <span className="lla-preset-label">{PRESET_LABELS[name] ?? name}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function ThemeTab({ theme, onChange }: {
   theme: Record<string, string>; onChange: (t: Record<string, string>) => void;
 }) {
   const set = (key: string, value: string) => onChange({ ...theme, [key]: value });
   return (
     <>
+      <div className="lla-section">
+        <h3 className="lla-section-title">Temas</h3>
+        <PresetPicker currentTheme={theme} onSelect={onChange} />
+      </div>
       <div className="lla-section">
         <h3 className="lla-section-title">Cores</h3>
         <div className="lla-card">
@@ -500,6 +555,7 @@ function ThemeTab({ theme, onChange }: {
           <PresetField label="Sombra" value={theme.shadow ?? "none"} onChange={(v) => set("shadow", v)} presets={SHADOW_PRESETS} />
           <PresetField label="Fonte" value={theme.font ?? "'Inter', sans-serif"} onChange={(v) => set("font", v)} presets={FONT_OPTIONS} />
           <RangeField label="Largura máxima" value={theme.maxWidth ?? "480px"} onChange={(v) => set("maxWidth", v)} min={320} max={720} step={10} unit="px" />
+          <PresetField label="Animação de fundo" value={theme.bgAnimation ?? "none"} onChange={(v) => set("bgAnimation", v)} presets={BG_ANIMATION_OPTIONS} />
         </div>
       </div>
     </>
