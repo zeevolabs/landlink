@@ -178,3 +178,121 @@
   outline-offset: 2px;
   opacity: 0.5;
 }
+
+/* --- Background Animations --- */
+
+.ll-anim-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--ll-bg) 0%,
+    color-mix(in srgb, var(--ll-accent) 8%, var(--ll-bg)) 50%,
+    var(--ll-bg) 100%
+  );
+  background-size: 400% 400%;
+  animation: ll-gradient-shift 15s ease infinite alternate;
+}
+
+@keyframes ll-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ll-anim-aurora {
+  position: relative;
+  overflow: hidden;
+}
+
+.ll-anim-aurora::before,
+.ll-anim-aurora::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.12;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ll-anim-aurora::before {
+  width: 300px;
+  height: 300px;
+  background: var(--ll-accent);
+  top: -80px;
+  right: -60px;
+  filter: blur(80px);
+  animation: ll-aurora-a 20s ease-in-out infinite alternate;
+}
+
+.ll-anim-aurora::after {
+  width: 250px;
+  height: 250px;
+  background: var(--ll-accent);
+  bottom: -60px;
+  left: -40px;
+  filter: blur(70px);
+  animation: ll-aurora-b 18s ease-in-out infinite alternate;
+}
+
+@keyframes ll-aurora-a {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-40px, 60px) scale(1.2); }
+}
+
+@keyframes ll-aurora-b {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, -40px) scale(1.15); }
+}
+
+.ll-anim-float {
+  position: relative;
+  overflow: hidden;
+}
+
+.ll-anim-float::before,
+.ll-anim-float::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ll-anim-float::before {
+  width: 120px;
+  height: 120px;
+  background: var(--ll-accent);
+  opacity: 0.06;
+  top: 15%;
+  right: -30px;
+  animation: ll-float-a 25s ease-in-out infinite alternate;
+}
+
+.ll-anim-float::after {
+  width: 80px;
+  height: 80px;
+  background: var(--ll-accent);
+  opacity: 0.05;
+  bottom: 20%;
+  left: -20px;
+  animation: ll-float-b 22s ease-in-out infinite alternate;
+}
+
+@keyframes ll-float-a {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-30px, 50px) rotate(180deg); }
+}
+
+@keyframes ll-float-b {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(40px, -35px) rotate(-180deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ll-anim-gradient,
+  .ll-anim-aurora::before,
+  .ll-anim-aurora::after,
+  .ll-anim-float::before,
+  .ll-anim-float::after {
+    animation: none;
+  }
+}

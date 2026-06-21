@@ -1,7 +1,7 @@
 import { defaultBlocks } from "../blocks";
 import type { Config } from "../config/types";
 import { type Registry, createRegistry } from "../registry/registry";
-import { applyTheme } from "../theme/apply-theme";
+import { applyTheme, resolveTheme } from "../theme/apply-theme";
 import { Profile } from "./profile";
 
 const defaultRegistry = createRegistry(defaultBlocks);
@@ -15,7 +15,9 @@ export interface LandlinkProps {
 }
 
 export function Landlink({ config, registry = defaultRegistry, className, adminPath }: LandlinkProps) {
-  const rootClass = ["ll-root", className].filter(Boolean).join(" ");
+  const resolved = resolveTheme(config.theme);
+  const animClass = resolved.bgAnimation !== "none" ? resolved.bgAnimation : "";
+  const rootClass = ["ll-root", animClass, className].filter(Boolean).join(" ");
 
   return (
     <div data-landlink className={rootClass} style={applyTheme(config.theme)}>

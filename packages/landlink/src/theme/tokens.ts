@@ -9,6 +9,7 @@ export const themeTokens = {
   shadow: "--ll-shadow",
   font: "--ll-font",
   maxWidth: "--ll-max-width",
+  bgAnimation: "--ll-bg-animation",
 } as const;
 
 export type TokenName = keyof typeof themeTokens;
