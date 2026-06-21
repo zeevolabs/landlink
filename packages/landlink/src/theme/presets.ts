@@ -133,6 +133,19 @@ export const themePresets = {
     maxWidth: "560px",
     bgAnimation: "ll-anim-gradient",
   },
+  sunflower: {
+    bg: "#fefbf0",
+    fg: "#3b2a0f",
+    accent: "#d4940a",
+    accentContrast: "#ffffff",
+    muted: "#8a7340",
+    border: "#edd9a3",
+    radius: "14px",
+    shadow: "0 2px 10px rgba(212, 148, 10, 0.18)",
+    font: sans,
+    maxWidth: "560px",
+    bgAnimation: "ll-anim-gradient",
+  },
 } satisfies Record<string, ThemeTokens>;
 
 export type PresetName = keyof typeof themePresets;

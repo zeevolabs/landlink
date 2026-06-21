@@ -493,6 +493,7 @@ const PRESET_LABELS: Record<string, string> = {
   sand: "Areia",
   midnight: "Noturno",
   candy: "Candy",
+  sunflower: "Girassol",
 };
 
 const BG_ANIMATION_OPTIONS = [
