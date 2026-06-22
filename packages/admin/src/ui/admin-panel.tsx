@@ -726,6 +726,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
   const [status, setStatus] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("content");
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -960,12 +961,30 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
 
       <div className="lla-save-bar">
         <div className="lla-save-bar-inner">
+          <button type="button" className="lla-preview-toggle" onClick={() => setShowPreview(true)} aria-label="Visualizar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
           <button type="button" className="lla-btn-primary" onClick={save} disabled={saving || !isDirty}>
             {saving ? "Salvando..." : "Salvar"}
           </button>
           {status && <span className={`lla-save-status ${status.type}`}>{status.text}</span>}
         </div>
       </div>
+
+      {showPreview && (
+        <div className="lla-preview-overlay" onClick={() => setShowPreview(false)}>
+          <div className="lla-preview-overlay-content" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="lla-preview-overlay-close" onClick={() => setShowPreview(false)} aria-label="Fechar">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <PreviewFrame><Landlink config={config} registry={registry} /></PreviewFrame>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
