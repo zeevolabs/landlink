@@ -1,6 +1,6 @@
 {
   "name": "@zeevolabs/landlink-store-fs",
-  "version": "0.2.0-alpha.6",
+  "version": "0.2.0-alpha.7",
   "description": "Filesystem-based config store adapter for Landlink Admin.",
   "license": "MIT",
   "type": "module",
