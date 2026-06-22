@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Landlink, themePresets } from "@zeevolabs/landlink";
 import type { Registry, PresetName } from "@zeevolabs/landlink";
 import type { FieldDescriptor } from "../zod-to-fields";
@@ -491,6 +491,50 @@ function PresetField({ label, value, onChange, presets }: {
   );
 }
 
+function OgImageUpload({ value, fallback, onChange, onUpload }: {
+  value: string; fallback: string; onChange: (url: string) => void; onUpload: UploadAvatarFn;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [dragover, setDragover] = useState(false);
+  const display = value || fallback;
+
+  const upload = async (file: File) => {
+    setUploading(true);
+    try {
+      const url = await onUpload(file);
+      onChange(url);
+    } catch { /* ignore */ }
+    setUploading(false);
+  };
+
+  return (
+    <div
+      className={`lla-og-upload ${dragover ? "dragover" : ""} ${uploading ? "uploading" : ""}`}
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => { e.preventDefault(); setDragover(true); }}
+      onDragLeave={() => setDragover(false)}
+      onDrop={(e) => { e.preventDefault(); setDragover(false); const f = e.dataTransfer.files[0]; if (f) upload(f); }}
+    >
+      <input ref={inputRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
+      {display ? (
+        <img className="lla-og-upload-preview" src={display} alt="" />
+      ) : (
+        <div className="lla-og-upload-placeholder">
+          <span>Clique ou arraste uma imagem</span>
+        </div>
+      )}
+      {uploading && <div className="lla-avatar-upload-overlay">Enviando...</div>}
+      {!value && fallback && <p className="lla-og-upload-hint">Usando foto de perfil</p>}
+      {value && (
+        <button type="button" className="lla-avatar-upload-remove" onClick={(e) => { e.stopPropagation(); onChange(""); }}>
+          Remover imagem
+        </button>
+      )}
+    </div>
+  );
+}
+
 function SeoPreview({ title, description, url, image }: {
   title: string; description: string; url: string; image: string;
 }) {
@@ -701,16 +745,20 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
     setConfig((c) => c ? { ...c, profile: { ...c.profile, [key]: value } } : c);
   }, []);
 
+  const [keywordsText, setKeywordsText] = useState("");
+
+  useEffect(() => {
+    if (config?.meta?.keywords) setKeywordsText(config.meta.keywords.join(", "));
+  }, [config?.meta?.keywords === undefined]);
+
   const updateMeta = useCallback((key: string, value: string) => {
-    setConfig((c) => {
-      if (!c) return c;
-      if (key === "keywords") {
-        const keywords = value.split(",").map((k) => k.trim()).filter(Boolean);
-        return { ...c, meta: { ...c.meta, keywords } };
-      }
-      return { ...c, meta: { ...c.meta, [key]: value } };
-    });
+    setConfig((c) => c ? { ...c, meta: { ...c.meta, [key]: value } } : c);
   }, []);
+
+  const commitKeywords = useCallback(() => {
+    const keywords = keywordsText.split(",").map((k) => k.trim()).filter(Boolean);
+    setConfig((c) => c ? { ...c, meta: { ...c.meta, keywords } } : c);
+  }, [keywordsText]);
 
   const updateBlock = useCallback((index: number, block: Block) => {
     setConfig((c) => { if (!c) return c; const blocks = [...c.blocks]; blocks[index] = block; return { ...c, blocks }; });
@@ -862,10 +910,32 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
                   <FormField label="Título da página" value={config.meta?.title ?? ""} onChange={(v) => updateMeta("title", v)} placeholder="Nome | Descrição curta" />
                   <FormField label="Descrição" value={config.meta?.description ?? ""} onChange={(v) => updateMeta("description", v)} multiline placeholder="Descrição para mecanismos de busca" />
                   <FormField label="URL canônica" value={config.meta?.url ?? ""} onChange={(v) => updateMeta("url", v)} type="url" placeholder="https://example.com" />
-                  <FormField label="Imagem de compartilhamento" value={config.meta?.image ?? ""} onChange={(v) => updateMeta("image", v)} type="url" placeholder="https://example.com/og-image.jpg (vazio = usar avatar)" />
+                  <div className="lla-form-field">
+                    <span className="lla-form-label">Imagem de compartilhamento</span>
+                    {onUploadAvatar ? (
+                      <OgImageUpload
+                        value={config.meta?.image ?? ""}
+                        fallback={config.profile.avatar ?? ""}
+                        onChange={(v) => updateMeta("image", v)}
+                        onUpload={onUploadAvatar}
+                      />
+                    ) : (
+                      <FormField label="" value={config.meta?.image ?? ""} onChange={(v) => updateMeta("image", v)} type="url" placeholder="https://example.com/og-image.jpg" />
+                    )}
+                  </div>
                   <FormField label="Twitter/X" value={config.meta?.twitterHandle ?? ""} onChange={(v) => updateMeta("twitterHandle", v)} placeholder="@handle" />
                   <FormField label="Idioma" value={config.meta?.locale ?? ""} onChange={(v) => updateMeta("locale", v)} placeholder="pt-BR" />
-                  <FormField label="Palavras-chave (separadas por vírgula)" value={(config.meta?.keywords ?? []).join(", ")} onChange={(v) => updateMeta("keywords", v)} placeholder="keyword1, keyword2, keyword3" />
+                  <div className="lla-form-field">
+                    <span className="lla-form-label">Palavras-chave (separadas por vírgula)</span>
+                    <input
+                      type="text"
+                      className="lla-form-input"
+                      value={keywordsText}
+                      onChange={(e) => setKeywordsText(e.target.value)}
+                      onBlur={commitKeywords}
+                      placeholder="keyword1, keyword2, keyword3"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="lla-section">

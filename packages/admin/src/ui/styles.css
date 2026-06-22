@@ -1269,6 +1269,57 @@ select.lla-form-input {
   color: var(--lla-danger);
 }
 
+/* --- OG Image Upload --- */
+.lla-og-upload {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px dashed var(--lla-border);
+  border-radius: var(--lla-radius);
+  background: var(--lla-bg);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  user-select: none;
+}
+
+.lla-og-upload:hover,
+.lla-og-upload.dragover {
+  border-color: var(--lla-accent);
+}
+
+.lla-og-upload.uploading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.lla-og-upload-preview {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--lla-border);
+}
+
+.lla-og-upload-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100px;
+  color: var(--lla-text-secondary);
+  font-size: 13px;
+}
+
+.lla-og-upload-hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--lla-text-secondary);
+  opacity: 0.7;
+}
+
 /* --- SEO Preview --- */
 .lla-seo-google {
   font-family: Arial, sans-serif;
