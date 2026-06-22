@@ -496,7 +496,7 @@ function SeoPreview({ title, description, url, image }: {
 }) {
   const displayUrl = url
     ? (() => { try { return new URL(url).hostname; } catch { return url; } })()
-    : "seudominio.com";
+    : "example.com";
   const truncDesc = description.length > 160 ? description.slice(0, 157) + "..." : description;
 
   return (
@@ -861,11 +861,11 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
                 <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <FormField label="Título da página" value={config.meta?.title ?? ""} onChange={(v) => updateMeta("title", v)} placeholder="Nome | Descrição curta" />
                   <FormField label="Descrição" value={config.meta?.description ?? ""} onChange={(v) => updateMeta("description", v)} multiline placeholder="Descrição para mecanismos de busca" />
-                  <FormField label="URL canônica" value={config.meta?.url ?? ""} onChange={(v) => updateMeta("url", v)} type="url" placeholder="https://seudominio.com" />
-                  <FormField label="Imagem de compartilhamento" value={config.meta?.image ?? ""} onChange={(v) => updateMeta("image", v)} type="url" placeholder="https://seudominio.com/og-image.jpg (vazio = usar avatar)" />
-                  <FormField label="Twitter/X" value={config.meta?.twitterHandle ?? ""} onChange={(v) => updateMeta("twitterHandle", v)} placeholder="@seuusuario" />
+                  <FormField label="URL canônica" value={config.meta?.url ?? ""} onChange={(v) => updateMeta("url", v)} type="url" placeholder="https://example.com" />
+                  <FormField label="Imagem de compartilhamento" value={config.meta?.image ?? ""} onChange={(v) => updateMeta("image", v)} type="url" placeholder="https://example.com/og-image.jpg (vazio = usar avatar)" />
+                  <FormField label="Twitter/X" value={config.meta?.twitterHandle ?? ""} onChange={(v) => updateMeta("twitterHandle", v)} placeholder="@handle" />
                   <FormField label="Idioma" value={config.meta?.locale ?? ""} onChange={(v) => updateMeta("locale", v)} placeholder="pt-BR" />
-                  <FormField label="Palavras-chave (separadas por vírgula)" value={(config.meta?.keywords ?? []).join(", ")} onChange={(v) => updateMeta("keywords", v)} placeholder="nail art, manicure, gel nails" />
+                  <FormField label="Palavras-chave (separadas por vírgula)" value={(config.meta?.keywords ?? []).join(", ")} onChange={(v) => updateMeta("keywords", v)} placeholder="keyword1, keyword2, keyword3" />
                 </div>
               </div>
               <div className="lla-section">
