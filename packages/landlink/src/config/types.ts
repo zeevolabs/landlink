@@ -13,6 +13,9 @@ export interface Meta {
   description?: string;
   image?: string;
   url?: string;
+  locale?: string;
+  twitterHandle?: string;
+  keywords?: string[];
 }
 
 export type CustomBlock = { type: string } & Record<string, unknown>;

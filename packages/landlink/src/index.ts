@@ -15,6 +15,9 @@ export type { HeadingBlock, ImageBlock, LinkBlock, SocialBlock } from "./blocks"
 
 export { iconPaths } from "./icons";
 
+export { buildMeta, buildJsonLd, buildRobots, buildSitemap } from "./seo";
+export type { LandlinkMetadata, JsonLdOutput, RobotsOutput, SitemapEntry } from "./seo";
+
 export { applyTheme, resolveTheme } from "./theme/apply-theme";
 export type { Theme } from "./theme/apply-theme";
 export { defaultPreset, themePresets } from "./theme/presets";

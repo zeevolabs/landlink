@@ -20,5 +20,8 @@ export const metaSchema = z
     description: z.string(),
     image: z.string(),
     url: z.string(),
+    locale: z.string(),
+    twitterHandle: z.string(),
+    keywords: z.array(z.string()),
   })
   .partial();
