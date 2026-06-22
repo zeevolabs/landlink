@@ -18,7 +18,15 @@ interface Block {
 interface Config {
   profile: { name: string; avatar?: string; bio?: string };
   theme?: Record<string, string>;
-  meta?: { title?: string; description?: string };
+  meta?: {
+    title?: string;
+    description?: string;
+    image?: string;
+    url?: string;
+    locale?: string;
+    twitterHandle?: string;
+    keywords?: string[];
+  };
   blocks: Block[];
 }
 
@@ -483,6 +491,43 @@ function PresetField({ label, value, onChange, presets }: {
   );
 }
 
+function SeoPreview({ title, description, url, image }: {
+  title: string; description: string; url: string; image: string;
+}) {
+  const displayUrl = url
+    ? (() => { try { return new URL(url).hostname; } catch { return url; } })()
+    : "seudominio.com";
+  const truncDesc = description.length > 160 ? description.slice(0, 157) + "..." : description;
+
+  return (
+    <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div>
+        <span className="lla-form-label" style={{ marginBottom: 8, display: "block" }}>Google</span>
+        <div className="lla-seo-google">
+          <div className="lla-seo-google-url">{displayUrl}</div>
+          <div className="lla-seo-google-title">{title || "Título da página"}</div>
+          <div className="lla-seo-google-desc">{truncDesc || "A descrição da sua página aparecerá aqui."}</div>
+        </div>
+      </div>
+      <div>
+        <span className="lla-form-label" style={{ marginBottom: 8, display: "block" }}>Redes sociais</span>
+        <div className="lla-seo-social">
+          {image && (
+            <div className="lla-seo-social-image">
+              <img src={image} alt="" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+            </div>
+          )}
+          <div className="lla-seo-social-body">
+            <div className="lla-seo-social-url">{displayUrl}</div>
+            <div className="lla-seo-social-title">{title || "Título da página"}</div>
+            <div className="lla-seo-social-desc">{truncDesc || "Descrição"}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const PRESET_LABELS: Record<string, string> = {
   light: "Claro",
   dark: "Escuro",
@@ -657,7 +702,14 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
   }, []);
 
   const updateMeta = useCallback((key: string, value: string) => {
-    setConfig((c) => c ? { ...c, meta: { ...c.meta, [key]: value } } : c);
+    setConfig((c) => {
+      if (!c) return c;
+      if (key === "keywords") {
+        const keywords = value.split(",").map((k) => k.trim()).filter(Boolean);
+        return { ...c, meta: { ...c.meta, keywords } };
+      }
+      return { ...c, meta: { ...c.meta, [key]: value } };
+    });
   }, []);
 
   const updateBlock = useCallback((index: number, block: Block) => {
@@ -803,13 +855,29 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
           {tab === "theme" && <ThemeTab theme={config.theme ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} />}
 
           {tab === "settings" && (
-            <div className="lla-section">
-              <h3 className="lla-section-title">SEO / Meta</h3>
-              <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <FormField label="Título da página" value={config.meta?.title ?? ""} onChange={(v) => updateMeta("title", v)} placeholder="Nome | Descrição curta" />
-                <FormField label="Descrição" value={config.meta?.description ?? ""} onChange={(v) => updateMeta("description", v)} multiline placeholder="Descrição para mecanismos de busca" />
+            <>
+              <div className="lla-section">
+                <h3 className="lla-section-title">SEO / Meta</h3>
+                <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <FormField label="Título da página" value={config.meta?.title ?? ""} onChange={(v) => updateMeta("title", v)} placeholder="Nome | Descrição curta" />
+                  <FormField label="Descrição" value={config.meta?.description ?? ""} onChange={(v) => updateMeta("description", v)} multiline placeholder="Descrição para mecanismos de busca" />
+                  <FormField label="URL canônica" value={config.meta?.url ?? ""} onChange={(v) => updateMeta("url", v)} type="url" placeholder="https://seudominio.com" />
+                  <FormField label="Imagem de compartilhamento" value={config.meta?.image ?? ""} onChange={(v) => updateMeta("image", v)} type="url" placeholder="https://seudominio.com/og-image.jpg (vazio = usar avatar)" />
+                  <FormField label="Twitter/X" value={config.meta?.twitterHandle ?? ""} onChange={(v) => updateMeta("twitterHandle", v)} placeholder="@seuusuario" />
+                  <FormField label="Idioma" value={config.meta?.locale ?? ""} onChange={(v) => updateMeta("locale", v)} placeholder="pt-BR" />
+                  <FormField label="Palavras-chave (separadas por vírgula)" value={(config.meta?.keywords ?? []).join(", ")} onChange={(v) => updateMeta("keywords", v)} placeholder="nail art, manicure, gel nails" />
+                </div>
               </div>
-            </div>
+              <div className="lla-section">
+                <h3 className="lla-section-title">Preview</h3>
+                <SeoPreview
+                  title={config.meta?.title ?? config.profile.name}
+                  description={config.meta?.description ?? config.profile.bio ?? ""}
+                  url={config.meta?.url ?? ""}
+                  image={config.meta?.image ?? config.profile.avatar ?? ""}
+                />
+              </div>
+            </>
           )}
         </main>
 
