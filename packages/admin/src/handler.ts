@@ -1,7 +1,12 @@
 import type { Config, Registry } from "@zeevolabs/landlink";
 import { safeParseConfig } from "@zeevolabs/landlink";
+import { zodToFields } from "./zod-to-fields";
 import { checkPassword } from "./auth";
 import type { ConfigStore } from "./types";
+
+export interface IntegrationHandler {
+  route: (request: Request) => Promise<Response>;
+}
 
 export interface AdminHandlerOptions {
   store: ConfigStore;
@@ -9,9 +14,10 @@ export interface AdminHandlerOptions {
   registry: Registry;
   fallback?: () => Config;
   uploadFile?: (file: File) => Promise<string>;
+  integrations?: Record<string, IntegrationHandler>;
 }
 
-export function createAdminHandler({ store, password, registry, fallback, uploadFile }: AdminHandlerOptions) {
+export function createAdminHandler({ store, password, registry, fallback, uploadFile, integrations }: AdminHandlerOptions) {
   async function GET(request: Request) {
     const auth = checkPassword(request, password);
     if (!auth.ok) return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -73,5 +79,48 @@ export function createAdminHandler({ store, password, registry, fallback, upload
     throw new Error("No config in store and no fallback provided");
   }
 
-  return { GET, PUT, POST, loadConfig };
+  function getSchema(_request: Request) {
+    const auth = checkPassword(_request, password);
+    if (!auth.ok) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    const types = registry.list();
+    const schemas: Record<string, unknown> = {};
+    for (const type of types) {
+      const def = registry.resolve(type);
+      if (def) schemas[type] = zodToFields(def.schema);
+    }
+    return Response.json({ types, schemas });
+  }
+
+  async function seed(request: Request) {
+    const auth = checkPassword(request, password);
+    if (!auth.ok) return Response.json({ error: "Unauthorized" }, { status: 401 });
+    const config = await loadConfig();
+    return Response.json(config);
+  }
+
+  async function route(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const segments = url.pathname.replace(/^\/api\/admin\/?/, "").split("/").filter(Boolean);
+    const action = segments[0] ?? "";
+
+    if (integrations && segments.length >= 2) {
+      const handler = integrations[action];
+      if (handler) return handler.route(request);
+    }
+
+    if (request.method === "GET") {
+      switch (action) {
+        case "config": return GET(request);
+        case "schema": return getSchema(request);
+        case "seed": return seed(request);
+      }
+    }
+    if (request.method === "PUT" && action === "config") return PUT(request);
+    if (request.method === "POST" && action === "upload") return POST(request);
+
+    return Response.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return { GET, PUT, POST, loadConfig, route, getSchema, seed };
 }

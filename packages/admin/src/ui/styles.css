@@ -573,6 +573,68 @@
   font-weight: 600;
 }
 
+/* --- Settings Sub-tabs (mobile) --- */
+
+.lla-settings-tabs-mobile {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.lla-settings-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--lla-text-secondary, #6b7280);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.lla-settings-tab[aria-selected="true"] {
+  background: var(--lla-text, #111827);
+  color: #fff;
+  border-color: var(--lla-text, #111827);
+}
+
+@media (min-width: 768px) {
+  .lla-settings-tabs-mobile {
+    display: none;
+  }
+}
+
+.lla-sidebar-sub {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  gap: 1px;
+}
+
+.lla-sidebar-sub-btn {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: none;
+  background: none;
+  color: var(--lla-text-secondary, #6b7280);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.lla-sidebar-sub-btn[aria-selected="true"] {
+  color: var(--lla-text, #111827);
+  font-weight: 600;
+  background: var(--lla-surface-2, #f3f4f6);
+}
+
+.lla-sidebar-sub-btn:hover:not([aria-selected="true"]) {
+  color: var(--lla-text, #111827);
+}
+
 .lla-sidebar-spacer {
   flex: 1;
 }
@@ -1470,3 +1532,368 @@ select.lla-form-input {
   color: #65676b;
   margin-top: 2px;
 }
+
+/* --- Integration Accordion --- */
+
+.lla-integrations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lla-integration-item {
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--lla-surface, #fff);
+}
+
+.lla-integration-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  color: var(--lla-text, #111827);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+}
+
+.lla-integration-header:hover {
+  background: var(--lla-surface-2, #f9fafb);
+}
+
+.lla-integration-header svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.lla-integration-chevron {
+  margin-left: auto;
+  display: inline-flex;
+  transition: transform 0.2s ease;
+}
+
+.lla-integration-chevron.open {
+  transform: rotate(180deg);
+}
+
+.lla-integration-chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lla-integration-body {
+  padding: 16px;
+  border-top: 1px solid var(--lla-border, #e5e7eb);
+}
+
+.lla-integration-body .lla-btn-primary,
+.lla-integration-body .lla-btn-secondary {
+  width: auto;
+  align-self: flex-start;
+}
+
+.lla-form-hint {
+  font-size: 11px;
+  color: var(--lla-text-secondary, #6b7280);
+  line-height: 1.4;
+}
+
+/* --- Booking Shared --- */
+
+.lla-booking-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lla-booking-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --- Booking Settings --- */
+
+.lla-connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lla-connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--lla-font);
+}
+
+.lla-connection-badge.connected {
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+}
+
+.lla-connection-badge.disconnected {
+  background: var(--lla-surface-2, #f3f4f6);
+  color: var(--lla-text-secondary, #6b7280);
+}
+
+.lla-working-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lla-working-hours-day {
+  display: grid;
+  grid-template-columns: 44px 80px 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.lla-working-hours-day.disabled {
+  opacity: 0.4;
+}
+
+
+.lla-day-label {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.lla-time-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--lla-surface, #fff);
+  color: var(--lla-text, #111827);
+}
+
+/* --- Booking List --- */
+
+.lla-booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lla-booking-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 8px;
+  background: var(--lla-surface, #fff);
+}
+
+.lla-booking-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.lla-booking-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lla-booking-item-date {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.lla-booking-item-date-sep {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .lla-booking-item-date {
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+
+  .lla-booking-item-date-sep {
+    display: inline;
+  }
+}
+
+.lla-booking-item-time-value {
+  font-weight: 500;
+  color: var(--lla-text-secondary, #6b7280);
+}
+
+.lla-booking-item-service {
+  font-size: 13px;
+  color: var(--lla-text-secondary, #6b7280);
+}
+
+.lla-booking-item-client {
+  font-size: 13px;
+}
+
+.lla-booking-item-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.lla-btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid #25d366;
+  border-radius: 8px;
+  background: transparent;
+  color: #25d366;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--lla-font);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.lla-btn-whatsapp:hover {
+  background: #25d366;
+  color: #fff;
+}
+
+.lla-btn-whatsapp:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lla-btn-whatsapp:disabled:hover {
+  background: transparent;
+  color: #25d366;
+}
+
+.lla-btn-cancel {
+  padding: 6px 14px;
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--lla-danger, #ef4444);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--lla-font);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.lla-btn-cancel:hover {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.lla-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 20px;
+  background: transparent;
+  color: var(--lla-text, #111827);
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--lla-font);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.lla-btn-secondary:hover {
+  background: var(--lla-surface-2, #f3f4f6);
+  border-color: var(--lla-text-secondary, #9ca3af);
+}
+
+.lla-filter-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.lla-filter-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--lla-border, #d1d5db);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--lla-text-secondary, #6b7280);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--lla-font);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.lla-filter-btn[aria-selected="true"] {
+  background: var(--lla-text, #111827);
+  color: #fff;
+  border-color: var(--lla-text, #111827);
+}
+
+.lla-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--lla-text-secondary, #6b7280);
+  text-align: center;
+  gap: 8px;
+}
+
+.lla-empty-state svg {
+  width: 40px;
+  height: 40px;
+  opacity: 0.4;
+}
+
+/* --- Alert Banner --- */
+.lla-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.lla-alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.lla-alert-warning {
+  background: #fffbeb;
+  border: 1px solid #f59e0b;
+  color: #92400e;
+}
+
+.lla-alert-warning svg {
+  color: #d97706;
+}
+

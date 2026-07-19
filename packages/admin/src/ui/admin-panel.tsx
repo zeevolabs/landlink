@@ -9,6 +9,8 @@ import { IconPicker } from "./icon-picker";
 import { PreviewFrame } from "./preview-frame";
 import { SocialEditor } from "./social-editor";
 import type { SocialItem } from "./social-editor";
+import { BookingList } from "./booking-list";
+import { BookingSettings } from "./booking-settings";
 
 interface Block {
   type: string;
@@ -31,7 +33,8 @@ interface Config {
 }
 
 type SchemaMap = Record<string, FieldDescriptor[]>;
-type Tab = "content" | "theme" | "settings";
+type Tab = "content" | "bookings" | "theme" | "settings";
+type SettingsSection = "seo" | "integrations";
 
 export type UploadAvatarFn = (file: File) => Promise<string>;
 
@@ -144,6 +147,14 @@ function IconArrowDown() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+function IconCalendar() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
     </svg>
   );
 }
@@ -316,7 +327,7 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
   isFirst: boolean; isLast: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const title = String(block.label ?? block.text ?? block.src ?? "");
+  const title = String(block.title ?? block.label ?? block.text ?? block.src ?? "");
 
   return (
     <div className="lla-block-card">
@@ -680,21 +691,34 @@ function AddBlockDropdown({ types, onAdd }: { types: string[]; onAdd: (type: str
 
 // --- Navigation ---
 
-const TABS: { id: Tab; label: string; icon: () => React.ReactNode }[] = [
-  { id: "content", label: "Conteúdo", icon: IconContent },
-  { id: "theme", label: "Aparência", icon: IconTheme },
-  { id: "settings", label: "Config", icon: IconSettings },
-];
+interface TabDef { id: Tab; label: string; icon: () => React.ReactNode; hidden?: boolean }
 
-function Sidebar({ tab, onTab, onLogout }: { tab: Tab; onTab: (t: Tab) => void; onLogout: () => void }) {
+function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, bookingConnected }: {
+  tab: Tab; onTab: (t: Tab) => void; onLogout: () => void;
+  settingsSection: SettingsSection; onSettingsSection: (s: SettingsSection) => void;
+  bookingConnected: boolean;
+}) {
+  const tabs: TabDef[] = [
+    { id: "content", label: "Conteúdo", icon: IconContent },
+    { id: "bookings", label: "Agenda", icon: IconCalendar, hidden: !bookingConnected },
+    { id: "theme", label: "Aparência", icon: IconTheme },
+    { id: "settings", label: "Config", icon: IconSettings },
+  ];
+
   return (
     <nav className="lla-sidebar">
       <p className="lla-sidebar-title">Admin</p>
-      {TABS.map((t) => (
+      {tabs.filter((t) => !t.hidden).map((t) => (
         <button key={t.id} className="lla-sidebar-btn" aria-selected={tab === t.id} onClick={() => onTab(t.id)}>
           <t.icon />{t.label}
         </button>
       ))}
+      {tab === "settings" && (
+        <div className="lla-sidebar-sub">
+          <button className="lla-sidebar-sub-btn" aria-selected={settingsSection === "seo"} onClick={() => onSettingsSection("seo")}>SEO</button>
+          <button className="lla-sidebar-sub-btn" aria-selected={settingsSection === "integrations"} onClick={() => onSettingsSection("integrations")}>Integrações</button>
+        </div>
+      )}
       <div className="lla-sidebar-spacer" />
       <button type="button" className="lla-sidebar-btn lla-sidebar-logout" onClick={onLogout}>
         <IconLogout />Sair
@@ -703,15 +727,61 @@ function Sidebar({ tab, onTab, onLogout }: { tab: Tab; onTab: (t: Tab) => void; 
   );
 }
 
-function MobileTabs({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+function MobileTabs({ tab, onTab, bookingConnected }: { tab: Tab; onTab: (t: Tab) => void; bookingConnected: boolean }) {
+  const tabs: TabDef[] = [
+    { id: "content", label: "Conteúdo", icon: IconContent },
+    { id: "bookings", label: "Agenda", icon: IconCalendar, hidden: !bookingConnected },
+    { id: "theme", label: "Aparência", icon: IconTheme },
+    { id: "settings", label: "Config", icon: IconSettings },
+  ];
+
   return (
     <nav className="lla-tabs-mobile">
-      {TABS.map((t) => (
+      {tabs.filter((t) => !t.hidden).map((t) => (
         <button key={t.id} className="lla-tab-btn" aria-selected={tab === t.id} onClick={() => onTab(t.id)}>
           <t.icon />{t.label}
         </button>
       ))}
     </nav>
+  );
+}
+
+// --- Integration Accordion ---
+
+function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected }: { basePath: string; bookingAvailable: boolean; onBookingConnected: () => void }) {
+  const [open, setOpen] = useState<string | null>(bookingAvailable ? "booking" : null);
+
+  const toggle = (id: string) => setOpen((prev) => (prev === id ? null : id));
+
+  const hasAny = bookingAvailable;
+
+  if (!hasAny) {
+    return (
+      <div className="lla-empty-state">
+        <IconSettings />
+        <p style={{ margin: 0 }}>Nenhuma integração instalada</p>
+        <p style={{ margin: 0, fontSize: "0.85rem" }}>Instale pacotes de integração (ex: @zeevolabs/landlink-booking) para configurá-los aqui.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="lla-integrations">
+      {bookingAvailable && (
+        <div className="lla-integration-item">
+          <button type="button" className="lla-integration-header" aria-expanded={open === "booking"} onClick={() => toggle("booking")}>
+            <IconCalendar />
+            <span>Agendamentos — Google Calendar</span>
+            <span className={`lla-integration-chevron ${open === "booking" ? "open" : ""}`}><IconChevron /></span>
+          </button>
+          {open === "booking" && (
+            <div className="lla-integration-body">
+              <BookingSettings bookingBasePath={`${basePath}/booking`} onConnected={onBookingConnected} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -726,6 +796,9 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
   const [status, setStatus] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("content");
+  const [settingsSection, setSettingsSection] = useState<SettingsSection>("seo");
+  const [bookingAvailable, setBookingAvailable] = useState(false);
+  const [bookingConnected, setBookingConnected] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
@@ -740,6 +813,15 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
       setBlockTypes(sch.types);
       setLoading(false);
     }).catch(() => setLoading(false));
+
+    fetch(`${basePath}/booking/config`, { headers: { "x-admin-password": getPassword() } })
+      .then((r) => {
+        if (r.status === 404) return null;
+        setBookingAvailable(true);
+        return r.ok ? r.json() : null;
+      })
+      .then((data) => { if (data?.connected) setBookingConnected(true); })
+      .catch(() => {});
   }, [basePath]);
 
   const updateProfile = useCallback((key: string, value: string) => {
@@ -834,7 +916,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
   return (
     <div className="lla-admin-root">
       <div className="lla-layout">
-        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} />
+        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} settingsSection={settingsSection} onSettingsSection={setSettingsSection} bookingConnected={bookingConnected} />
         <main className="lla-main">
           {tab === "content" && (
             <>
@@ -901,9 +983,20 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
             </>
           )}
 
+          {tab === "bookings" && (
+            <BookingList bookingBasePath={`${basePath}/booking`} />
+          )}
+
           {tab === "theme" && <ThemeTab theme={config.theme ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} />}
 
           {tab === "settings" && (
+            <div className="lla-settings-tabs-mobile">
+              <button className="lla-settings-tab" aria-selected={settingsSection === "seo"} onClick={() => setSettingsSection("seo")}>SEO</button>
+              <button className="lla-settings-tab" aria-selected={settingsSection === "integrations"} onClick={() => setSettingsSection("integrations")}>Integrações</button>
+            </div>
+          )}
+
+          {tab === "settings" && settingsSection === "seo" && (
             <>
               <div className="lla-section">
                 <h3 className="lla-section-title">SEO / Meta</h3>
@@ -950,13 +1043,17 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
               </div>
             </>
           )}
+
+          {tab === "settings" && settingsSection === "integrations" && (
+            <IntegrationAccordion basePath={basePath} bookingAvailable={bookingAvailable} onBookingConnected={() => setBookingConnected(true)} />
+          )}
         </main>
 
         <aside className="lla-preview-panel">
           <PreviewFrame><Landlink config={config} registry={registry} /></PreviewFrame>
         </aside>
 
-        <MobileTabs tab={tab} onTab={setTab} />
+        <MobileTabs tab={tab} onTab={setTab} bookingConnected={bookingConnected} />
       </div>
 
       <div className="lla-save-bar">

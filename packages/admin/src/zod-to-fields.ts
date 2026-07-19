@@ -2,7 +2,7 @@ import type { ZodTypeAny } from "zod";
 
 export interface FieldDescriptor {
   name: string;
-  type: "string" | "boolean" | "enum" | "array" | "object";
+  type: "string" | "number" | "boolean" | "enum" | "array" | "object";
   required: boolean;
   options?: string[];
   children?: FieldDescriptor[];
@@ -22,6 +22,10 @@ function toField(name: string, raw: ZodTypeAny): FieldDescriptor {
 
   if (typeName === "ZodBoolean") {
     return { name, type: "boolean", required };
+  }
+
+  if (typeName === "ZodNumber") {
+    return { name, type: "number", required };
   }
 
   if (typeName === "ZodEnum") {

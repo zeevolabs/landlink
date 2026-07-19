@@ -10,3 +10,7 @@ export { IconPicker } from "./icon-picker";
 export type { IconPickerProps, IconOption } from "./icon-picker";
 export { SocialEditor } from "./social-editor";
 export type { SocialEditorProps, SocialItem, SocialPlatform } from "./social-editor";
+export { BookingSettings } from "./booking-settings";
+export type { BookingSettingsProps } from "./booking-settings";
+export { BookingList } from "./booking-list";
+export type { BookingListProps } from "./booking-list";

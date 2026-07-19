@@ -85,6 +85,18 @@ describe("zodToFields", () => {
     ]);
   });
 
+  it("handles number fields", () => {
+    const schema = z.object({
+      type: z.literal("test"),
+      count: z.number(),
+      price: z.number().optional(),
+    });
+    expect(zodToFields(schema)).toEqual([
+      { name: "count", type: "number", required: true },
+      { name: "price", type: "number", required: false },
+    ]);
+  });
+
   it("returns empty array for non-object schemas", () => {
     expect(zodToFields(z.string())).toEqual([]);
   });
