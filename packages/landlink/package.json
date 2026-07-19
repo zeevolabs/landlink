@@ -25,6 +25,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "require": "./dist/client.cjs"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },

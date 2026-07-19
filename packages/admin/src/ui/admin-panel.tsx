@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import QRCode from "qrcode";
 import { Landlink, themePresets } from "@zeevolabs/landlink";
 import type { Registry, PresetName } from "@zeevolabs/landlink";
 import type { FieldDescriptor } from "../zod-to-fields";
@@ -583,6 +584,35 @@ function SeoPreview({ title, description, url, image }: {
   );
 }
 
+function QrCodePanel({ url }: { url: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current || !url) return;
+    QRCode.toCanvas(canvasRef.current, url, { width: 176, margin: 2 });
+  }, [url]);
+
+  const download = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const link = document.createElement("a");
+    link.download = "qrcode.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+
+  if (!url) return null;
+
+  return (
+    <div className="lla-qr-section">
+      <canvas ref={canvasRef} className="lla-qr-canvas" />
+      <button type="button" className="lla-qr-download" onClick={download}>
+        Download QR Code
+      </button>
+    </div>
+  );
+}
+
 const PRESET_LABELS: Record<string, string> = {
   light: "Claro",
   dark: "Escuro",
@@ -1041,6 +1071,14 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
                   image={config.meta?.image ?? config.profile.avatar ?? ""}
                 />
               </div>
+              {config.meta?.url && (
+                <div className="lla-section">
+                  <h3 className="lla-section-title">QR Code</h3>
+                  <div className="lla-card">
+                    <QrCodePanel url={config.meta.url} />
+                  </div>
+                </div>
+              )}
             </>
           )}
 

@@ -1,6 +1,6 @@
-import { Landlink } from "@zeevolabs/landlink";
 import type { Metadata } from "next";
-import { config, registry } from "../landlink.config";
+import { config } from "../landlink.config";
+import { ClientLandlink } from "./client-landlink";
 
 export function generateMetadata(): Metadata {
   const { profile, meta } = config;
@@ -19,5 +19,5 @@ export function generateMetadata(): Metadata {
 }
 
 export default function Page() {
-  return <Landlink config={config} registry={registry} />;
+  return <ClientLandlink config={config} />;
 }

@@ -190,6 +190,171 @@
   opacity: 0.5;
 }
 
+/* --- Email Capture Block --- */
+
+.ll-email-capture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  border-radius: var(--ll-radius);
+  border: 1px solid var(--ll-border);
+  background: color-mix(in srgb, var(--ll-bg) 95%, var(--ll-fg));
+}
+
+.ll-email-heading {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ll-email-form {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+
+.ll-email-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: var(--ll-radius);
+  border: 1px solid var(--ll-border);
+  background: var(--ll-bg);
+  color: var(--ll-fg);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.ll-email-input:focus {
+  border-color: var(--ll-accent);
+}
+
+.ll-email-btn {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border-radius: var(--ll-radius);
+  border: none;
+  background: var(--ll-accent);
+  color: var(--ll-accent-contrast);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.ll-email-btn:hover {
+  opacity: 0.9;
+}
+
+.ll-email-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ll-email-success {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ll-accent);
+  text-align: center;
+}
+
+.ll-email-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ef4444;
+  text-align: center;
+}
+
+/* --- Embed Block --- */
+
+.ll-embed {
+  position: relative;
+  width: 100%;
+  border-radius: var(--ll-radius);
+  overflow: hidden;
+}
+
+.ll-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.ll-embed-compact {
+  height: 152px;
+}
+
+.ll-embed-compact iframe {
+  position: static;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Countdown Block --- */
+
+.ll-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-radius: var(--ll-radius);
+  border: 1px solid var(--ll-border);
+  background: color-mix(in srgb, var(--ll-bg) 95%, var(--ll-fg));
+}
+
+.ll-countdown-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ll-muted);
+  text-align: center;
+}
+
+.ll-countdown-grid {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.ll-countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 48px;
+}
+
+.ll-countdown-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ll-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.ll-countdown-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ll-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ll-countdown-expired {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ll-muted);
+  text-align: center;
+}
+
 /* --- Background Animations --- */
 
 .ll-anim-gradient {

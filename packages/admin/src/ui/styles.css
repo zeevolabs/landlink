@@ -1897,3 +1897,32 @@ select.lla-form-input {
   color: #d97706;
 }
 
+
+/* --- QR Code Panel --- */
+.lla-qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.lla-qr-canvas {
+  border-radius: 8px;
+  display: block;
+}
+
+.lla-qr-download {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--lla-border, #e5e7eb);
+  background: transparent;
+  color: var(--lla-text, #111827);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.lla-qr-download:hover {
+  background: var(--lla-surface, #f9fafb);
+}

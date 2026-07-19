@@ -10,8 +10,8 @@ export type { Registry } from "./registry/registry";
 
 export { defineBlock } from "./blocks/define-block";
 export type { BlockDefinition, BlockProps } from "./blocks/define-block";
-export { defaultBlocks, headingBlock, imageBlock, linkBlock, socialBlock } from "./blocks";
-export type { HeadingBlock, ImageBlock, LinkBlock, SocialBlock } from "./blocks";
+export { defaultBlocks, embedBlock, headingBlock, imageBlock, linkBlock, socialBlock } from "./blocks";
+export type { EmbedBlock, HeadingBlock, ImageBlock, LinkBlock, SocialBlock } from "./blocks";
 
 export { iconPaths } from "./icons";
 
