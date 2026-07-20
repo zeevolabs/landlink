@@ -9,23 +9,23 @@ importers:
   .:
     dependencies:
       '@zeevolabs/landlink':
-        specifier: 0.3.0-alpha.18
-        version: 0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 0.3.0-alpha.20
+        version: 0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@zeevolabs/landlink-admin':
         specifier: 0.2.0-alpha.18
-        version: 0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)
+        version: 0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)
       '@zeevolabs/landlink-analytics':
         specifier: 0.1.0-alpha.18
         version: 0.1.0-alpha.18(@upstash/redis@1.38.0)
       '@zeevolabs/landlink-booking':
         specifier: 0.2.0-alpha.17
-        version: 0.2.0-alpha.17(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(zod@4.1.11)
+        version: 0.2.0-alpha.17(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(zod@4.1.11)
       '@zeevolabs/landlink-store-fs':
         specifier: 0.2.0-alpha.17
-        version: 0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))
+        version: 0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))
       '@zeevolabs/landlink-store-vercel-blob':
         specifier: 0.2.0-alpha.17
-        version: 0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))
+        version: 0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -1246,8 +1246,8 @@ packages:
     peerDependencies:
       '@zeevolabs/landlink-admin': '>=0.2.0-alpha.1'
 
-  '@zeevolabs/landlink@0.3.0-alpha.18':
-    resolution: {integrity: sha512-VlUeUCE86zcuNz0SAOmNxe/y34WLOms0gDmKr+vvzi6x+64b4ptaor9Pxu0dm89gELn9/zp5buHeudsdqaoYBA==}
+  '@zeevolabs/landlink@0.3.0-alpha.20':
+    resolution: {integrity: sha512-uspRKiUiCezKb2gtkz0wveuXIeTl90Y/ZYzRlfdkRzRLEt9Lr46sY0c675cUPSdJz2fiOBnAk1xMQdAU8Uxd0w==}
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19
@@ -2880,9 +2880,9 @@ snapshots:
       loupe: 3.2.1
       tinyrainbow: 1.2.0
 
-  '@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)':
+  '@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)':
     dependencies:
-      '@zeevolabs/landlink': 0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@zeevolabs/landlink': 0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       qrcode: 1.5.4
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
@@ -2892,22 +2892,22 @@ snapshots:
     dependencies:
       '@upstash/redis': 1.38.0
 
-  '@zeevolabs/landlink-booking@0.2.0-alpha.17(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(zod@4.1.11)':
+  '@zeevolabs/landlink-booking@0.2.0-alpha.17(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(zod@4.1.11)':
     dependencies:
-      '@zeevolabs/landlink': 0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@zeevolabs/landlink': 0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
       zod: 4.1.11
 
-  '@zeevolabs/landlink-store-fs@0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))':
+  '@zeevolabs/landlink-store-fs@0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))':
     dependencies:
-      '@zeevolabs/landlink-admin': 0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)
+      '@zeevolabs/landlink-admin': 0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)
 
-  '@zeevolabs/landlink-store-vercel-blob@0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))':
+  '@zeevolabs/landlink-store-vercel-blob@0.2.0-alpha.17(@zeevolabs/landlink-admin@0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11))':
     dependencies:
       '@vercel/blob': 2.6.1
-      '@zeevolabs/landlink-admin': 0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)
+      '@zeevolabs/landlink-admin': 0.2.0-alpha.18(@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.1.11)
 
-  '@zeevolabs/landlink@0.3.0-alpha.18(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@zeevolabs/landlink@0.3.0-alpha.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)

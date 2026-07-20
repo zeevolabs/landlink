@@ -29,12 +29,14 @@
 }
 
 .ll-avatar {
-  width: 96px;
-  height: 96px;
+  width: 108px;
+  height: 108px;
   border-radius: 999px;
   object-fit: cover;
-  border: 2px solid var(--ll-accent);
-  box-shadow: 0 0 0 3px var(--ll-bg), 0 0 0 5px var(--ll-border);
+  border: 3px solid var(--ll-accent);
+  outline: 3px solid color-mix(in srgb, var(--ll-accent) 35%, transparent);
+  outline-offset: 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
 }
 
 .ll-name {
@@ -42,8 +44,9 @@
   align-items: center;
   gap: 6px;
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .ll-verified {
@@ -819,12 +822,30 @@
   color: var(--ll-fg, #111827);
 }
 
+/* --- Entrance Animation --- */
+
+@keyframes ll-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ll-profile {
+  animation: ll-enter 0.45s ease both;
+}
+
+.ll-blocks {
+  animation: ll-enter 0.45s ease both;
+  animation-delay: 0.08s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ll-anim-gradient,
   .ll-anim-aurora::before,
   .ll-anim-aurora::after,
   .ll-anim-float::before,
-  .ll-anim-float::after {
+  .ll-anim-float::after,
+  .ll-profile,
+  .ll-blocks {
     animation: none;
   }
 }
