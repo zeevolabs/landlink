@@ -1,37 +1,39 @@
 import { useEffect, useRef, useState } from "react";
 import { iconPaths } from "@zeevolabs/landlink";
+import type { AdminStrings } from "../strings";
 
 export interface IconOption {
   name: string;
   label: string;
 }
 
-const ICON_LABELS: Record<string, string> = {
-  link: "Link",
-  globe: "Website",
-  "shopping-bag": "Loja",
-  calendar: "Agenda",
-  mail: "E-mail",
-  phone: "Telefone",
-  "map-pin": "Localização",
-  play: "Vídeo",
-  music: "Música",
-  "file-text": "Documento",
-  heart: "Favorito",
-  star: "Destaque",
+const ICON_NAME_TO_STRING_KEY: Record<string, keyof AdminStrings> = {
+  link: "iconLink",
+  globe: "iconWebsite",
+  "shopping-bag": "iconStore",
+  calendar: "iconCalendar",
+  mail: "iconEmail",
+  phone: "iconPhone",
+  "map-pin": "iconLocation",
+  play: "iconVideo",
+  music: "iconMusic",
+  "file-text": "iconDocument",
+  heart: "iconFavorite",
+  star: "iconHighlight",
 };
-
-const ICONS: IconOption[] = Object.keys(iconPaths).map((name) => ({
-  name,
-  label: ICON_LABELS[name] ?? name,
-}));
 
 export interface IconPickerProps {
   value: string;
   onChange: (icon: string) => void;
+  strings: AdminStrings;
 }
 
-export function IconPicker({ value, onChange }: IconPickerProps) {
+export function IconPicker({ value, onChange, strings }: IconPickerProps) {
+  const ICONS: IconOption[] = Object.keys(iconPaths).map((name) => ({
+    name,
+    label: strings[ICON_NAME_TO_STRING_KEY[name] ?? "iconLink"] ?? name,
+  }));
+
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -74,7 +76,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             <span className="lla-icon-picker-label">{ICONS.find((i) => i.name === value)?.label ?? value}</span>
           </>
         ) : (
-          <span className="lla-icon-picker-empty">Selecionar ícone</span>
+          <span className="lla-icon-picker-empty">{strings.iconPickerSelect}</span>
         )}
       </button>
       {open && (
@@ -87,7 +89,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             type="button"
             className={`lla-icon-picker-option ${!value ? "active" : ""}`}
             onClick={() => { onChange(""); setOpen(false); }}
-            title="Nenhum"
+            title={strings.iconPickerNone}
           >
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />

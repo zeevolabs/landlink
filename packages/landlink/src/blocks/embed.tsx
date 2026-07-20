@@ -39,7 +39,7 @@ const ASPECT_PADDING: Record<string, string> = {
   "1:1": "100%",
 };
 
-function Embed({ url, title, aspectRatio = "16:9" }: EmbedBlock) {
+function Embed({ url, title, aspectRatio = "16:9", strings }: EmbedBlock & { strings?: { embedDefaultTitle: string } }) {
   const embedUrl = getEmbedUrl(url);
   const isCompact = aspectRatio === "compact";
 
@@ -48,7 +48,7 @@ function Embed({ url, title, aspectRatio = "16:9" }: EmbedBlock) {
       <div className="ll-embed ll-embed-compact">
         <iframe
           src={embedUrl}
-          title={title ?? "Media embed"}
+          title={title ?? strings?.embedDefaultTitle ?? "Media embed"}
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         />
@@ -60,7 +60,7 @@ function Embed({ url, title, aspectRatio = "16:9" }: EmbedBlock) {
     <div className="ll-embed" style={{ paddingBottom: ASPECT_PADDING[aspectRatio] ?? "56.25%" }}>
       <iframe
         src={embedUrl}
-        title={title ?? "Media embed"}
+        title={title ?? strings?.embedDefaultTitle ?? "Media embed"}
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         allowFullScreen
         loading="lazy"

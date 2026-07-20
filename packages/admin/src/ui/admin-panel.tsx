@@ -12,6 +12,8 @@ import { SocialEditor } from "./social-editor";
 import type { SocialItem } from "./social-editor";
 import { BookingList } from "./booking-list";
 import { BookingSettings } from "./booking-settings";
+import type { AdminStrings } from "../strings";
+import { en as enStrings } from "../strings";
 
 interface Block {
   type: string;
@@ -45,6 +47,7 @@ export interface AdminPanelProps {
   onUploadAvatar?: UploadAvatarFn;
   /** Base path for the analytics API (e.g. "/api/analytics"). Enables the Analytics tab. */
   analyticsPath?: string;
+  strings?: Partial<AdminStrings>;
 }
 
 interface AnalyticsStats {
@@ -203,7 +206,7 @@ function BarChart({ data }: { data: { label: string; value: number }[] }) {
   );
 }
 
-function AnalyticsTab({ analyticsPath }: { analyticsPath: string }) {
+function AnalyticsTab({ analyticsPath, strings }: { analyticsPath: string; strings: AdminStrings }) {
   const [stats, setStats] = useState<AnalyticsStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -219,35 +222,35 @@ function AnalyticsTab({ analyticsPath }: { analyticsPath: string }) {
   }, [analyticsPath]);
 
   if (loading) {
-    return <div className="lla-section"><div className="lla-card"><p style={{ color: "var(--lla-text-secondary)" }}>Carregando...</p></div></div>;
+    return <div className="lla-section"><div className="lla-card"><p style={{ color: "var(--lla-text-secondary)" }}>{strings.analyticsLoading}</p></div></div>;
   }
 
   if (error || !stats) {
-    return <div className="lla-section"><div className="lla-card"><p style={{ color: "var(--lla-text-secondary)" }}>Erro ao carregar analytics. Verifique se o endpoint está configurado.</p></div></div>;
+    return <div className="lla-section"><div className="lla-card"><p style={{ color: "var(--lla-text-secondary)" }}>{strings.analyticsError}</p></div></div>;
   }
 
   return (
     <>
       <div className="lla-section">
-        <h3 className="lla-section-title">Visualizações</h3>
+        <h3 className="lla-section-title">{strings.analyticsViews}</h3>
         <div className="lla-card">
-          <p className="lla-analytics-total">{stats.totalViews.toLocaleString("pt-BR")}</p>
-          <p className="lla-analytics-subtitle">visualizações totais</p>
+          <p className="lla-analytics-total">{stats.totalViews.toLocaleString()}</p>
+          <p className="lla-analytics-subtitle">{strings.analyticsTotalViews}</p>
           <BarChart data={stats.last7Days.map((d) => ({ label: d.date, value: d.count }))} />
         </div>
       </div>
 
       <div className="lla-section">
-        <h3 className="lla-section-title">Cliques por link</h3>
+        <h3 className="lla-section-title">{strings.analyticsClicksTitle}</h3>
         <div className="lla-card">
           {stats.blocks.length === 0 ? (
-            <p className="lla-analytics-empty">Nenhum clique registrado ainda.</p>
+            <p className="lla-analytics-empty">{strings.analyticsNoClicks}</p>
           ) : (
             <div className="lla-analytics-table">
               {stats.blocks.map((block) => (
                 <div key={block.id} className="lla-analytics-row">
                   <span className="lla-analytics-block-id">{block.id}</span>
-                  <span className="lla-analytics-block-count">{block.totalClicks.toLocaleString("pt-BR")} cliques</span>
+                  <span className="lla-analytics-block-count">{block.totalClicks.toLocaleString()}</span>
                 </div>
               ))}
             </div>
@@ -276,7 +279,7 @@ function IconUser() {
 
 // --- Password Gate ---
 
-function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => void }) {
+function PasswordGate({ basePath, onAuth, strings }: { basePath: string; onAuth: () => void; strings: AdminStrings }) {
   const [pw, setPw] = useState("");
   const [error, setError] = useState(false);
 
@@ -309,16 +312,16 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
               autoComplete="current-password"
               value={pw}
               onChange={(e) => { setPw(e.target.value); setError(false); }}
-              placeholder="Senha"
+              placeholder={strings.passwordPlaceholder}
               className="lla-form-input"
               autoFocus
             />
           </div>
-          {error && <p className="lla-gate-error">Senha incorreta</p>}
-          <button type="submit" className="lla-btn-primary">Entrar</button>
+          {error && <p className="lla-gate-error">{strings.passwordIncorrect}</p>}
+          <button type="submit" className="lla-btn-primary">{strings.passwordSubmit}</button>
         </form>
         <a href="https://github.com/zeevolabs/landlink" target="_blank" rel="noopener noreferrer" className="lla-gate-footer">
-          powered by <strong>landlink</strong>
+          {strings.poweredBy} <strong>landlink</strong>
         </a>
       </div>
     </div>
@@ -412,10 +415,10 @@ function ArrayField({ label, fields, items, onChange }: {
 
 // --- Block Card ---
 
-function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, isFirst, isLast }: {
+function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, isFirst, isLast, strings }: {
   block: Block; schema: FieldDescriptor[]; onChange: (b: Block) => void;
   onRemove: () => void; onMoveUp: () => void; onMoveDown: () => void;
-  isFirst: boolean; isLast: boolean;
+  isFirst: boolean; isLast: boolean; strings: AdminStrings;
 }) {
   const [open, setOpen] = useState(false);
   const title = String(block.title ?? block.label ?? block.text ?? block.src ?? "");
@@ -449,6 +452,7 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
                   <IconPicker
                     value={String(block[field.name] ?? "")}
                     onChange={(v) => onChange({ ...block, [field.name]: v })}
+                    strings={strings}
                   />
                 </div>
               );
@@ -499,22 +503,22 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
 
 // --- Theme Editor ---
 
-const COLOR_FIELDS = [
-  { key: "bg", label: "Fundo" },
-  { key: "fg", label: "Texto" },
-  { key: "accent", label: "Destaque" },
-  { key: "accentContrast", label: "Texto destaque" },
-  { key: "muted", label: "Texto secundário" },
-  { key: "border", label: "Borda" },
-] as const;
+const COLOR_FIELD_KEYS: { key: string; strKey: keyof AdminStrings }[] = [
+  { key: "bg", strKey: "themeColorBg" },
+  { key: "fg", strKey: "themeColorText" },
+  { key: "accent", strKey: "themeColorAccent" },
+  { key: "accentContrast", strKey: "themeColorAccentContrast" },
+  { key: "muted", strKey: "themeColorMuted" },
+  { key: "border", strKey: "themeColorBorder" },
+];
 
-const SHADOW_PRESETS = [
-  { label: "Nenhuma", value: "none" },
-  { label: "Sutil", value: "0 1px 3px rgba(0,0,0,0.08)" },
-  { label: "Média", value: "0 4px 12px rgba(0,0,0,0.1)" },
-  { label: "Forte", value: "0 8px 24px rgba(0,0,0,0.15)" },
-  { label: "Retro", value: "3px 4px 0 0 #000" },
-] as const;
+const SHADOW_VALUES = [
+  { strKey: "themeShadowNone" as keyof AdminStrings, value: "none" },
+  { strKey: "themeShadowSubtle" as keyof AdminStrings, value: "0 1px 3px rgba(0,0,0,0.08)" },
+  { strKey: "themeShadowMedium" as keyof AdminStrings, value: "0 4px 12px rgba(0,0,0,0.1)" },
+  { strKey: "themeShadowStrong" as keyof AdminStrings, value: "0 8px 24px rgba(0,0,0,0.15)" },
+  { strKey: "themeShadowRetro" as keyof AdminStrings, value: "3px 4px 0 0 #000" },
+];
 
 const FONT_OPTIONS = [
   { label: "Inter", value: "'Inter', sans-serif" },
@@ -638,8 +642,8 @@ function OgImageUpload({ value, fallback, onChange, onUpload }: {
   );
 }
 
-function SeoPreview({ title, description, url, image }: {
-  title: string; description: string; url: string; image: string;
+function SeoPreview({ title, description, url, image, strings }: {
+  title: string; description: string; url: string; image: string; strings: AdminStrings;
 }) {
   const displayUrl = url
     ? (() => { try { return new URL(url).hostname; } catch { return url; } })()
@@ -649,15 +653,15 @@ function SeoPreview({ title, description, url, image }: {
   return (
     <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
-        <span className="lla-form-label" style={{ marginBottom: 8, display: "block" }}>Google</span>
+        <span className="lla-form-label" style={{ marginBottom: 8, display: "block" }}>{strings.seoPreviewGoogle}</span>
         <div className="lla-seo-google">
           <div className="lla-seo-google-url">{displayUrl}</div>
-          <div className="lla-seo-google-title">{title || "Título da página"}</div>
-          <div className="lla-seo-google-desc">{truncDesc || "A descrição da sua página aparecerá aqui."}</div>
+          <div className="lla-seo-google-title">{title || strings.seoPreviewDefaultTitle}</div>
+          <div className="lla-seo-google-desc">{truncDesc || strings.seoPreviewDefaultDesc}</div>
         </div>
       </div>
       <div>
-        <span className="lla-form-label" style={{ marginBottom: 8, display: "block" }}>Redes sociais</span>
+        <span className="lla-form-label" style={{ marginBottom: 8, display: "block" }}>{strings.seoPreviewSocial}</span>
         <div className="lla-seo-social">
           {image && (
             <div className="lla-seo-social-image">
@@ -666,8 +670,8 @@ function SeoPreview({ title, description, url, image }: {
           )}
           <div className="lla-seo-social-body">
             <div className="lla-seo-social-url">{displayUrl}</div>
-            <div className="lla-seo-social-title">{title || "Título da página"}</div>
-            <div className="lla-seo-social-desc">{truncDesc || "Descrição"}</div>
+            <div className="lla-seo-social-title">{title || strings.seoPreviewDefaultTitle}</div>
+            <div className="lla-seo-social-desc">{truncDesc || strings.seoPreviewDefaultSocialDesc}</div>
           </div>
         </div>
       </div>
@@ -704,30 +708,31 @@ function QrCodePanel({ url }: { url: string }) {
   );
 }
 
-const PRESET_LABELS: Record<string, string> = {
-  light: "Claro",
-  dark: "Escuro",
-  rose: "Rosa",
-  mint: "Menta",
-  ocean: "Oceano",
-  sunset: "Pôr do sol",
-  lavender: "Lavanda",
-  sand: "Areia",
-  midnight: "Noturno",
-  candy: "Candy",
-  sunflower: "Girassol",
+const PRESET_STRING_KEYS: Record<string, keyof AdminStrings> = {
+  light: "themePresetLight",
+  dark: "themePresetDark",
+  rose: "themePresetRose",
+  mint: "themePresetMint",
+  ocean: "themePresetOcean",
+  sunset: "themePresetSunset",
+  lavender: "themePresetLavender",
+  sand: "themePresetSand",
+  midnight: "themePresetMidnight",
+  candy: "themePresetCandy",
+  sunflower: "themePresetSunflower",
 };
 
-const BG_ANIMATION_OPTIONS = [
-  { label: "Nenhuma", value: "none" },
-  { label: "Gradiente", value: "ll-anim-gradient" },
-  { label: "Aurora", value: "ll-anim-aurora" },
-  { label: "Flutuante", value: "ll-anim-float" },
-] as const;
+const BG_ANIMATION_VALUES = [
+  { strKey: "themeAnimNone" as keyof AdminStrings, value: "none" },
+  { strKey: "themeAnimGradient" as keyof AdminStrings, value: "ll-anim-gradient" },
+  { strKey: "themeAnimAurora" as keyof AdminStrings, value: "ll-anim-aurora" },
+  { strKey: "themeAnimFloat" as keyof AdminStrings, value: "ll-anim-float" },
+];
 
-function PresetPicker({ currentTheme, onSelect }: {
+function PresetPicker({ currentTheme, onSelect, strings }: {
   currentTheme: Record<string, string>;
   onSelect: (tokens: Record<string, string>) => void;
+  strings: AdminStrings;
 }) {
   const presetEntries = Object.entries(themePresets) as [PresetName, Record<string, string>][];
   const activePreset = presetEntries.find(([, tokens]) =>
@@ -736,54 +741,59 @@ function PresetPicker({ currentTheme, onSelect }: {
 
   return (
     <div className="lla-preset-grid">
-      {presetEntries.map(([name, tokens]) => (
-        <button
-          key={name}
-          type="button"
-          className={`lla-preset-card ${activePreset === name ? "active" : ""}`}
-          onClick={() => onSelect({ ...tokens })}
-          aria-label={PRESET_LABELS[name] ?? name}
-        >
-          <div className="lla-preset-preview" style={{ background: tokens.bg }}>
-            <div className="lla-preset-avatar" style={{ background: tokens.accent, opacity: 0.8 }} />
-            <div className="lla-preset-bar" style={{ background: tokens.accent }} />
-            <div className="lla-preset-bar" style={{ background: tokens.border, borderColor: tokens.border }} />
-          </div>
-          <span className="lla-preset-label">{PRESET_LABELS[name] ?? name}</span>
-        </button>
-      ))}
+      {presetEntries.map(([name, tokens]) => {
+        const label = strings[PRESET_STRING_KEYS[name] ?? "themePresetLight"] ?? name;
+        return (
+          <button
+            key={name}
+            type="button"
+            className={`lla-preset-card ${activePreset === name ? "active" : ""}`}
+            onClick={() => onSelect({ ...tokens })}
+            aria-label={label}
+          >
+            <div className="lla-preset-preview" style={{ background: tokens.bg }}>
+              <div className="lla-preset-avatar" style={{ background: tokens.accent, opacity: 0.8 }} />
+              <div className="lla-preset-bar" style={{ background: tokens.accent }} />
+              <div className="lla-preset-bar" style={{ background: tokens.border, borderColor: tokens.border }} />
+            </div>
+            <span className="lla-preset-label">{label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-function ThemeTab({ theme, onChange }: {
-  theme: Record<string, string>; onChange: (t: Record<string, string>) => void;
+function ThemeTab({ theme, onChange, strings }: {
+  theme: Record<string, string>; onChange: (t: Record<string, string>) => void; strings: AdminStrings;
 }) {
   const set = (key: string, value: string) => onChange({ ...theme, [key]: value });
+  const shadowPresets = SHADOW_VALUES.map(({ strKey, value }) => ({ label: strings[strKey], value }));
+  const animPresets = BG_ANIMATION_VALUES.map(({ strKey, value }) => ({ label: strings[strKey], value }));
   return (
     <>
       <div className="lla-section">
-        <h3 className="lla-section-title">Temas</h3>
-        <PresetPicker currentTheme={theme} onSelect={onChange} />
+        <h3 className="lla-section-title">{strings.themeSectionPresets}</h3>
+        <PresetPicker currentTheme={theme} onSelect={onChange} strings={strings} />
       </div>
       <div className="lla-section">
-        <h3 className="lla-section-title">Cores</h3>
+        <h3 className="lla-section-title">{strings.themeSectionColors}</h3>
         <div className="lla-card">
           <div className="lla-theme-grid">
-            {COLOR_FIELDS.map(({ key, label }) => (
-              <ColorField key={key} label={label} value={theme[key] ?? ""} onChange={(v) => set(key, v)} />
+            {COLOR_FIELD_KEYS.map(({ key, strKey }) => (
+              <ColorField key={key} label={strings[strKey]} value={theme[key] ?? ""} onChange={(v) => set(key, v)} />
             ))}
           </div>
         </div>
       </div>
       <div className="lla-section">
-        <h3 className="lla-section-title">Estilo</h3>
+        <h3 className="lla-section-title">{strings.themeSectionStyle}</h3>
         <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <RangeField label="Arredondamento" value={theme.radius ?? "8px"} onChange={(v) => set("radius", v)} min={0} max={32} step={1} unit="px" />
-          <PresetField label="Sombra" value={theme.shadow ?? "none"} onChange={(v) => set("shadow", v)} presets={SHADOW_PRESETS} />
-          <PresetField label="Fonte" value={theme.font ?? "'Inter', sans-serif"} onChange={(v) => set("font", v)} presets={FONT_OPTIONS} />
-          <RangeField label="Largura máxima" value={theme.maxWidth ?? "480px"} onChange={(v) => set("maxWidth", v)} min={320} max={720} step={10} unit="px" />
-          <PresetField label="Animação de fundo" value={theme.bgAnimation ?? "none"} onChange={(v) => set("bgAnimation", v)} presets={BG_ANIMATION_OPTIONS} />
+          <RangeField label={strings.themeRoundness} value={theme.radius ?? "8px"} onChange={(v) => set("radius", v)} min={0} max={32} step={1} unit="px" />
+          <PresetField label={strings.themeShadow} value={theme.shadow ?? "none"} onChange={(v) => set("shadow", v)} presets={shadowPresets} />
+          <PresetField label={strings.themeFont} value={theme.font ?? "'Inter', sans-serif"} onChange={(v) => set("font", v)} presets={FONT_OPTIONS} />
+          <RangeField label={strings.themeMaxWidth} value={theme.maxWidth ?? "480px"} onChange={(v) => set("maxWidth", v)} min={320} max={720} step={10} unit="px" />
+          <PresetField label={strings.themeBgAnimation} value={theme.bgAnimation ?? "none"} onChange={(v) => set("bgAnimation", v)} presets={animPresets} />
         </div>
       </div>
     </>
@@ -792,12 +802,12 @@ function ThemeTab({ theme, onChange }: {
 
 // --- Add Block Dropdown ---
 
-function AddBlockDropdown({ types, onAdd }: { types: string[]; onAdd: (type: string) => void }) {
+function AddBlockDropdown({ types, onAdd, strings }: { types: string[]; onAdd: (type: string) => void; strings: AdminStrings }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="lla-add-dropdown">
       <button type="button" className="lla-btn-add" onClick={() => setOpen(!open)}>
-        <IconPlus /> Adicionar bloco
+        <IconPlus /> {strings.linksAddBlock}
       </button>
       {open && (
         <div className="lla-add-menu">
@@ -814,18 +824,19 @@ function AddBlockDropdown({ types, onAdd }: { types: string[]; onAdd: (type: str
 
 interface TabDef { id: Tab; label: string; icon: () => React.ReactNode; hidden?: boolean }
 
-function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, bookingConnected, analyticsPath }: {
+function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, bookingConnected, analyticsPath, strings }: {
   tab: Tab; onTab: (t: Tab) => void; onLogout: () => void;
   settingsSection: SettingsSection; onSettingsSection: (s: SettingsSection) => void;
   bookingConnected: boolean;
   analyticsPath?: string;
+  strings: AdminStrings;
 }) {
   const tabs: TabDef[] = [
-    { id: "content", label: "Conteúdo", icon: IconContent },
-    { id: "bookings", label: "Agenda", icon: IconCalendar, hidden: !bookingConnected },
-    { id: "analytics", label: "Analytics", icon: IconBarChart, hidden: !analyticsPath },
-    { id: "theme", label: "Aparência", icon: IconTheme },
-    { id: "settings", label: "Config", icon: IconSettings },
+    { id: "content", label: strings.tabContent, icon: IconContent },
+    { id: "bookings", label: strings.tabBookings, icon: IconCalendar, hidden: !bookingConnected },
+    { id: "analytics", label: strings.tabAnalytics, icon: IconBarChart, hidden: !analyticsPath },
+    { id: "theme", label: strings.tabTheme, icon: IconTheme },
+    { id: "settings", label: strings.tabSettings, icon: IconSettings },
   ];
 
   return (
@@ -838,25 +849,25 @@ function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, boo
       ))}
       {tab === "settings" && (
         <div className="lla-sidebar-sub">
-          <button className="lla-sidebar-sub-btn" aria-selected={settingsSection === "seo"} onClick={() => onSettingsSection("seo")}>SEO</button>
-          <button className="lla-sidebar-sub-btn" aria-selected={settingsSection === "integrations"} onClick={() => onSettingsSection("integrations")}>Integrações</button>
+          <button className="lla-sidebar-sub-btn" aria-selected={settingsSection === "seo"} onClick={() => onSettingsSection("seo")}>{strings.settingsSeo}</button>
+          <button className="lla-sidebar-sub-btn" aria-selected={settingsSection === "integrations"} onClick={() => onSettingsSection("integrations")}>{strings.settingsIntegrations}</button>
         </div>
       )}
       <div className="lla-sidebar-spacer" />
       <button type="button" className="lla-sidebar-btn lla-sidebar-logout" onClick={onLogout}>
-        <IconLogout />Sair
+        <IconLogout />{strings.buttonLogout}
       </button>
     </nav>
   );
 }
 
-function MobileTabs({ tab, onTab, bookingConnected, analyticsPath }: { tab: Tab; onTab: (t: Tab) => void; bookingConnected: boolean; analyticsPath?: string }) {
+function MobileTabs({ tab, onTab, bookingConnected, analyticsPath, strings }: { tab: Tab; onTab: (t: Tab) => void; bookingConnected: boolean; analyticsPath?: string; strings: AdminStrings }) {
   const tabs: TabDef[] = [
-    { id: "content", label: "Conteúdo", icon: IconContent },
-    { id: "bookings", label: "Agenda", icon: IconCalendar, hidden: !bookingConnected },
-    { id: "analytics", label: "Analytics", icon: IconBarChart, hidden: !analyticsPath },
-    { id: "theme", label: "Aparência", icon: IconTheme },
-    { id: "settings", label: "Config", icon: IconSettings },
+    { id: "content", label: strings.tabContent, icon: IconContent },
+    { id: "bookings", label: strings.tabBookings, icon: IconCalendar, hidden: !bookingConnected },
+    { id: "analytics", label: strings.tabAnalytics, icon: IconBarChart, hidden: !analyticsPath },
+    { id: "theme", label: strings.tabTheme, icon: IconTheme },
+    { id: "settings", label: strings.tabSettings, icon: IconSettings },
   ];
 
   return (
@@ -872,7 +883,7 @@ function MobileTabs({ tab, onTab, bookingConnected, analyticsPath }: { tab: Tab;
 
 // --- Integration Accordion ---
 
-function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected }: { basePath: string; bookingAvailable: boolean; onBookingConnected: () => void }) {
+function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected, strings }: { basePath: string; bookingAvailable: boolean; onBookingConnected: () => void; strings: AdminStrings }) {
   const [open, setOpen] = useState<string | null>(bookingAvailable ? "booking" : null);
 
   const toggle = (id: string) => setOpen((prev) => (prev === id ? null : id));
@@ -883,8 +894,8 @@ function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected }
     return (
       <div className="lla-empty-state">
         <IconSettings />
-        <p style={{ margin: 0 }}>Nenhuma integração instalada</p>
-        <p style={{ margin: 0, fontSize: "0.85rem" }}>Instale pacotes de integração (ex: @zeevolabs/landlink-booking) para configurá-los aqui.</p>
+        <p style={{ margin: 0 }}>{strings.integrationsNone}</p>
+        <p style={{ margin: 0, fontSize: "0.85rem" }}>{strings.integrationsNoneHint}</p>
       </div>
     );
   }
@@ -895,7 +906,7 @@ function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected }
         <div className="lla-integration-item">
           <button type="button" className="lla-integration-header" aria-expanded={open === "booking"} onClick={() => toggle("booking")}>
             <IconCalendar />
-            <span>Agendamentos — Google Calendar</span>
+            <span>{strings.integrationsBookingTitle}</span>
             <span className={`lla-integration-chevron ${open === "booking" ? "open" : ""}`}><IconChevron /></span>
           </button>
           {open === "booking" && (
@@ -911,7 +922,7 @@ function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected }
 
 // --- Main Admin Shell ---
 
-function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPath }: { registry: Registry; basePath: string; onLogout: () => void; onUploadAvatar?: UploadAvatarFn; analyticsPath?: string }) {
+function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPath, strings }: { registry: Registry; basePath: string; onLogout: () => void; onUploadAvatar?: UploadAvatarFn; analyticsPath?: string; strings: AdminStrings }) {
   const [config, setConfig] = useState<Config | null>(null);
   const [savedConfig, setSavedConfig] = useState<Config | null>(null);
   const [schemas, setSchemas] = useState<SchemaMap>({});
@@ -1010,10 +1021,10 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
     try {
       await api(basePath, "/config", "PUT", config);
       setSavedConfig(config);
-      setStatus({ text: "Salvo com sucesso", type: "success" });
+      setStatus({ text: strings.statusSaved, type: "success" });
       setTimeout(() => setStatus(null), 3000);
     } catch (e) {
-      setStatus({ text: e instanceof Error ? e.message : "Erro ao salvar", type: "error" });
+      setStatus({ text: e instanceof Error ? e.message : strings.statusSaveError, type: "error" });
     } finally {
       setSaving(false);
     }
@@ -1024,7 +1035,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
   if (loading) {
     return (
       <div className="lla-admin-root">
-        <div className="lla-gate"><p style={{ color: "var(--lla-text-secondary)" }}>Carregando...</p></div>
+        <div className="lla-gate"><p style={{ color: "var(--lla-text-secondary)" }}>{strings.statusLoading}</p></div>
       </div>
     );
   }
@@ -1032,7 +1043,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
   if (!config) {
     return (
       <div className="lla-admin-root">
-        <div className="lla-gate"><div className="lla-gate-card"><p>Nenhuma configuração encontrada.</p></div></div>
+        <div className="lla-gate"><div className="lla-gate-card"><p>{strings.statusNoConfig}</p></div></div>
       </div>
     );
   }
@@ -1040,12 +1051,12 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
   return (
     <div className="lla-admin-root">
       <div className="lla-layout">
-        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} settingsSection={settingsSection} onSettingsSection={setSettingsSection} bookingConnected={bookingConnected} analyticsPath={analyticsPath} />
+        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} settingsSection={settingsSection} onSettingsSection={setSettingsSection} bookingConnected={bookingConnected} analyticsPath={analyticsPath} strings={strings} />
         <main className="lla-main">
           {tab === "content" && (
             <>
               <div className="lla-section">
-                <h3 className="lla-section-title">Perfil</h3>
+                <h3 className="lla-section-title">{strings.profileSection}</h3>
                 <div className="lla-card">
                   <div className="lla-profile-header">
                     {config.profile.avatar ? (
@@ -1054,25 +1065,26 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                       <div className="lla-profile-avatar-placeholder"><IconUser /></div>
                     )}
                     <div>
-                      <p className="lla-profile-name">{config.profile.name || "Sem nome"}</p>
-                      <p className="lla-profile-subtitle">Editar perfil</p>
+                      <p className="lla-profile-name">{config.profile.name || strings.profileNoName}</p>
+                      <p className="lla-profile-subtitle">{strings.profileEditHint}</p>
                     </div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    <FormField label="Nome" value={config.profile.name} onChange={(v) => updateProfile("name", v)} />
+                    <FormField label={strings.profileNameLabel} value={config.profile.name} onChange={(v) => updateProfile("name", v)} />
                     {onUploadAvatar ? (
                       <div className="lla-form-field">
-                        <span className="lla-form-label">Foto de perfil</span>
+                        <span className="lla-form-label">{strings.profileAvatarLabel}</span>
                         <AvatarUpload
                           value={config.profile.avatar ?? ""}
                           onChange={(v) => updateProfile("avatar", v)}
                           onUpload={onUploadAvatar}
+                          strings={strings}
                         />
                       </div>
                     ) : (
-                      <FormField label="Avatar (URL)" value={config.profile.avatar ?? ""} onChange={(v) => updateProfile("avatar", v)} placeholder="/avatar.jpg" />
+                      <FormField label={strings.profileAvatarUrlLabel} value={config.profile.avatar ?? ""} onChange={(v) => updateProfile("avatar", v)} placeholder="/avatar.jpg" />
                     )}
-                    <FormField label="Bio" value={config.profile.bio ?? ""} onChange={(v) => updateProfile("bio", v)} multiline />
+                    <FormField label={strings.profileBioLabel} value={config.profile.bio ?? ""} onChange={(v) => updateProfile("bio", v)} multiline />
                   </div>
                 </div>
               </div>
@@ -1081,16 +1093,16 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                 if (block.type !== "social") return null;
                 return (
                   <div key={`socials-${i}`} className="lla-section">
-                    <h3 className="lla-section-title">Redes sociais</h3>
+                    <h3 className="lla-section-title">{strings.socialSection}</h3>
                     <div className="lla-card">
-                      <SocialEditor items={(block.items as SocialItem[]) ?? []} onChange={(items) => updateBlock(i, { ...block, items })} />
+                      <SocialEditor items={(block.items as SocialItem[]) ?? []} onChange={(items) => updateBlock(i, { ...block, items })} strings={strings} />
                     </div>
                   </div>
                 );
               })}
 
               <div className="lla-section">
-                <h3 className="lla-section-title">Links</h3>
+                <h3 className="lla-section-title">{strings.linksSection}</h3>
                 {config.blocks.map((block, i) => {
                   if (block.type === "social") return null;
                   const nonSocial = config.blocks.filter((b) => b.type !== "social");
@@ -1099,10 +1111,10 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                     <BlockCard key={`${block.type}-${i}`} block={block} schema={schemas[block.type] ?? []}
                       onChange={(b) => updateBlock(i, b)} onRemove={() => removeBlock(i)}
                       onMoveUp={() => moveBlock(i, -1)} onMoveDown={() => moveBlock(i, 1)}
-                      isFirst={idx === 0} isLast={idx === nonSocial.length - 1} />
+                      isFirst={idx === 0} isLast={idx === nonSocial.length - 1} strings={strings} />
                   );
                 })}
-                <AddBlockDropdown types={blockTypes.filter((t) => t !== "social")} onAdd={addBlock} />
+                <AddBlockDropdown types={blockTypes.filter((t) => t !== "social")} onAdd={addBlock} strings={strings} />
               </div>
             </>
           )}
@@ -1112,28 +1124,28 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
           )}
 
           {tab === "analytics" && analyticsPath && (
-            <AnalyticsTab analyticsPath={analyticsPath} />
+            <AnalyticsTab analyticsPath={analyticsPath} strings={strings} />
           )}
 
-          {tab === "theme" && <ThemeTab theme={config.theme ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} />}
+          {tab === "theme" && <ThemeTab theme={config.theme ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} strings={strings} />}
 
           {tab === "settings" && (
             <div className="lla-settings-tabs-mobile">
-              <button className="lla-settings-tab" aria-selected={settingsSection === "seo"} onClick={() => setSettingsSection("seo")}>SEO</button>
-              <button className="lla-settings-tab" aria-selected={settingsSection === "integrations"} onClick={() => setSettingsSection("integrations")}>Integrações</button>
+              <button className="lla-settings-tab" aria-selected={settingsSection === "seo"} onClick={() => setSettingsSection("seo")}>{strings.settingsSeo}</button>
+              <button className="lla-settings-tab" aria-selected={settingsSection === "integrations"} onClick={() => setSettingsSection("integrations")}>{strings.settingsIntegrations}</button>
             </div>
           )}
 
           {tab === "settings" && settingsSection === "seo" && (
             <>
               <div className="lla-section">
-                <h3 className="lla-section-title">SEO / Meta</h3>
+                <h3 className="lla-section-title">{strings.seoSection}</h3>
                 <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <FormField label="Título da página" value={config.meta?.title ?? ""} onChange={(v) => updateMeta("title", v)} placeholder="Nome | Descrição curta" />
-                  <FormField label="Descrição" value={config.meta?.description ?? ""} onChange={(v) => updateMeta("description", v)} multiline placeholder="Descrição para mecanismos de busca" />
-                  <FormField label="URL canônica" value={config.meta?.url ?? ""} onChange={(v) => updateMeta("url", v)} type="url" placeholder="https://example.com" />
+                  <FormField label={strings.seoTitleLabel} value={config.meta?.title ?? ""} onChange={(v) => updateMeta("title", v)} placeholder="Nome | Descrição curta" />
+                  <FormField label={strings.seoDescriptionLabel} value={config.meta?.description ?? ""} onChange={(v) => updateMeta("description", v)} multiline placeholder="Descrição para mecanismos de busca" />
+                  <FormField label={strings.seoCanonicalLabel} value={config.meta?.url ?? ""} onChange={(v) => updateMeta("url", v)} type="url" placeholder="https://example.com" />
                   <div className="lla-form-field">
-                    <span className="lla-form-label">Imagem de compartilhamento</span>
+                    <span className="lla-form-label">{strings.seoImageLabel}</span>
                     {onUploadAvatar ? (
                       <OgImageUpload
                         value={config.meta?.image ?? ""}
@@ -1145,10 +1157,10 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                       <FormField label="" value={config.meta?.image ?? ""} onChange={(v) => updateMeta("image", v)} type="url" placeholder="https://example.com/og-image.jpg" />
                     )}
                   </div>
-                  <FormField label="Twitter/X" value={config.meta?.twitterHandle ?? ""} onChange={(v) => updateMeta("twitterHandle", v)} placeholder="@handle" />
-                  <FormField label="Idioma" value={config.meta?.locale ?? ""} onChange={(v) => updateMeta("locale", v)} placeholder="pt-BR" />
+                  <FormField label={strings.seoTwitterLabel} value={config.meta?.twitterHandle ?? ""} onChange={(v) => updateMeta("twitterHandle", v)} placeholder="@handle" />
+                  <FormField label={strings.seoLocaleLabel} value={config.meta?.locale ?? ""} onChange={(v) => updateMeta("locale", v)} placeholder="pt-BR" />
                   <div className="lla-form-field">
-                    <span className="lla-form-label">Palavras-chave (separadas por vírgula)</span>
+                    <span className="lla-form-label">{strings.seoKeywordsLabel}</span>
                     <input
                       type="text"
                       className="lla-form-input"
@@ -1161,17 +1173,18 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                 </div>
               </div>
               <div className="lla-section">
-                <h3 className="lla-section-title">Preview</h3>
+                <h3 className="lla-section-title">{strings.seoPreviewSection}</h3>
                 <SeoPreview
                   title={config.meta?.title ?? config.profile.name}
                   description={config.meta?.description ?? config.profile.bio ?? ""}
                   url={config.meta?.url ?? ""}
                   image={config.meta?.image ?? config.profile.avatar ?? ""}
+                  strings={strings}
                 />
               </div>
               {config.meta?.url && (
                 <div className="lla-section">
-                  <h3 className="lla-section-title">QR Code</h3>
+                  <h3 className="lla-section-title">{strings.seoQrSection}</h3>
                   <div className="lla-card">
                     <QrCodePanel url={config.meta.url} />
                   </div>
@@ -1181,7 +1194,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
           )}
 
           {tab === "settings" && settingsSection === "integrations" && (
-            <IntegrationAccordion basePath={basePath} bookingAvailable={bookingAvailable} onBookingConnected={() => setBookingConnected(true)} />
+            <IntegrationAccordion basePath={basePath} bookingAvailable={bookingAvailable} onBookingConnected={() => setBookingConnected(true)} strings={strings} />
           )}
         </main>
 
@@ -1189,18 +1202,18 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
           <PreviewFrame><Landlink config={config} registry={registry} /></PreviewFrame>
         </aside>
 
-        <MobileTabs tab={tab} onTab={setTab} bookingConnected={bookingConnected} analyticsPath={analyticsPath} />
+        <MobileTabs tab={tab} onTab={setTab} bookingConnected={bookingConnected} analyticsPath={analyticsPath} strings={strings} />
       </div>
 
       <div className="lla-save-bar">
         <div className="lla-save-bar-inner">
-          <button type="button" className="lla-preview-toggle" onClick={() => setShowPreview(true)} aria-label="Visualizar">
+          <button type="button" className="lla-preview-toggle" onClick={() => setShowPreview(true)} aria-label={strings.buttonPreview}>
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
             </svg>
           </button>
           <button type="button" className="lla-btn-primary" onClick={save} disabled={saving || !isDirty}>
-            {saving ? "Salvando..." : "Salvar"}
+            {saving ? strings.buttonSaving : strings.buttonSave}
           </button>
           {status && <span className={`lla-save-status ${status.type}`}>{status.text}</span>}
         </div>
@@ -1209,7 +1222,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
       {showPreview && (
         <div className="lla-preview-overlay" onClick={() => setShowPreview(false)}>
           <div className="lla-preview-overlay-content" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="lla-preview-overlay-close" onClick={() => setShowPreview(false)} aria-label="Fechar">
+            <button type="button" className="lla-preview-overlay-close" onClick={() => setShowPreview(false)} aria-label={strings.mobileCloseLabel}>
               <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
@@ -1224,7 +1237,8 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
 
 // --- Exported Component ---
 
-export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, analyticsPath }: AdminPanelProps) {
+export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, analyticsPath, strings }: AdminPanelProps) {
+  const s: AdminStrings = { ...enStrings, ...strings };
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
@@ -1238,6 +1252,6 @@ export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, 
     setAuthed(false);
   };
 
-  if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} />;
-  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} onUploadAvatar={onUploadAvatar} analyticsPath={analyticsPath} />;
+  if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} strings={s} />;
+  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} onUploadAvatar={onUploadAvatar} analyticsPath={analyticsPath} strings={s} />;
 }

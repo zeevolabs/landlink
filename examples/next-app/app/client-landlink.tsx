@@ -1,6 +1,6 @@
 "use client";
 
-import { Landlink, createRegistry, defaultBlocks } from "@zeevolabs/landlink";
+import { Landlink, createRegistry, defaultBlocks, ptBR } from "@zeevolabs/landlink";
 import type { Config } from "@zeevolabs/landlink";
 import { clientBlocks } from "@zeevolabs/landlink/client";
 import { highlightBlock } from "../blocks/highlight";
@@ -12,5 +12,5 @@ const registry = createRegistry([
 ]);
 
 export function ClientLandlink({ config, analyticsPath }: { config: Config; analyticsPath?: string }) {
-  return <Landlink config={config} registry={registry} analyticsPath={analyticsPath} />;
+  return <Landlink config={config} registry={registry} analyticsPath={analyticsPath} strings={ptBR} />;
 }

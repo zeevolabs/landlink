@@ -2,11 +2,13 @@
 
 import { useRef, useState } from "react";
 import type { UploadAvatarFn } from "./admin-panel";
+import type { AdminStrings } from "../strings";
 
 export interface AvatarUploadProps {
   value: string;
   onChange: (url: string) => void;
   onUpload: UploadAvatarFn;
+  strings: AdminStrings;
 }
 
 function IconCamera() {
@@ -18,7 +20,7 @@ function IconCamera() {
   );
 }
 
-export function AvatarUpload({ value, onChange, onUpload }: AvatarUploadProps) {
+export function AvatarUpload({ value, onChange, onUpload, strings }: AvatarUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export function AvatarUpload({ value, onChange, onUpload }: AvatarUploadProps) {
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      setError("Selecione uma imagem válida");
+      setError(strings.avatarInvalidFile);
       return;
     }
     setUploading(true);
@@ -35,7 +37,7 @@ export function AvatarUpload({ value, onChange, onUpload }: AvatarUploadProps) {
       const url = await onUpload(file);
       onChange(url);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Erro ao enviar");
+      setError(e instanceof Error ? e.message : strings.avatarUploadError);
     } finally {
       setUploading(false);
     }
@@ -74,9 +76,9 @@ export function AvatarUpload({ value, onChange, onUpload }: AvatarUploadProps) {
         </div>
       )}
 
-      {uploading && <div className="lla-avatar-upload-overlay">Enviando...</div>}
+      {uploading && <div className="lla-avatar-upload-overlay">{strings.avatarUploading}</div>}
 
-      <p className="lla-avatar-upload-hint">Clique ou arraste uma foto</p>
+      <p className="lla-avatar-upload-hint">{strings.avatarUploadHint}</p>
 
       {error && <p className="lla-avatar-upload-error">{error}</p>}
 
@@ -86,7 +88,7 @@ export function AvatarUpload({ value, onChange, onUpload }: AvatarUploadProps) {
           className="lla-avatar-upload-remove"
           onClick={(e) => { e.stopPropagation(); onChange(""); }}
         >
-          Remover foto
+          {strings.avatarRemove}
         </button>
       )}
     </div>

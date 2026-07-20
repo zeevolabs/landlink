@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { defineBlock } from "./define-block";
+import type { LandlinkStrings } from "../strings";
 
 export const countdownData = z.object({
   targetDate: z.string().min(1),
@@ -34,7 +35,7 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-function Countdown({ targetDate, title, expiredMessage = "Event has ended" }: CountdownBlock) {
+function Countdown({ targetDate, title, expiredMessage, strings }: CountdownBlock & { strings?: LandlinkStrings }) {
   // Initialize with null to avoid SSR/client hydration mismatch (Date.now() differs).
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
@@ -47,7 +48,7 @@ function Countdown({ targetDate, title, expiredMessage = "Event has ended" }: Co
   if (!timeLeft) {
     return (
       <div className="ll-countdown">
-        <p className="ll-countdown-expired">{expiredMessage}</p>
+        <p className="ll-countdown-expired">{expiredMessage ?? "Event has ended"}</p>
       </div>
     );
   }
@@ -58,10 +59,10 @@ function Countdown({ targetDate, title, expiredMessage = "Event has ended" }: Co
       <div className="ll-countdown-grid">
         {(
           [
-            [timeLeft.days, "days"],
-            [timeLeft.hours, "hrs"],
-            [timeLeft.minutes, "min"],
-            [timeLeft.seconds, "sec"],
+            [timeLeft.days, strings?.countdownDays ?? "days"],
+            [timeLeft.hours, strings?.countdownHours ?? "hrs"],
+            [timeLeft.minutes, strings?.countdownMinutes ?? "min"],
+            [timeLeft.seconds, strings?.countdownSeconds ?? "sec"],
           ] as [number, string][]
         ).map(([value, label]) => (
           <div key={label} className="ll-countdown-item">

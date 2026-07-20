@@ -41,7 +41,7 @@ function attrHref(xml: string): string {
   return m ? (m[1] ?? "") : "";
 }
 
-function parseItems(xml: string, max: number): FeedItem[] {
+function parseItems(xml: string, max: number, locale: string): FeedItem[] {
   const isAtom = /<feed\b/i.test(xml);
   const itemTag = isAtom ? "entry" : "item";
   const regex = new RegExp(`<${itemTag}[\\s\\S]*?<\\/${itemTag}>`, "gi");
@@ -65,7 +65,7 @@ function parseItems(xml: string, max: number): FeedItem[] {
     let date: string | undefined;
     if (rawDate) {
       try {
-        date = new Date(rawDate).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+        date = new Date(rawDate).toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" });
       } catch { /* ignore invalid dates */ }
     }
 
@@ -73,14 +73,15 @@ function parseItems(xml: string, max: number): FeedItem[] {
   });
 }
 
-async function RssFeed({ url, title, maxItems = 3, showDate = true, showDescription = false }: RssFeedBlock) {
+async function RssFeed({ url, title, maxItems = 3, showDate = true, showDescription = false, strings }: RssFeedBlock & { strings?: { rssFeedLocale: string } }) {
+  const locale = strings?.rssFeedLocale ?? "en-US";
   let items: FeedItem[] = [];
 
   try {
     const res = await fetch(url, { next: { revalidate: 3600 } } as RequestInit);
     if (res.ok) {
       const xml = await res.text();
-      items = parseItems(xml, maxItems);
+      items = parseItems(xml, maxItems, locale);
     }
   } catch { /* fail silently */ }
 

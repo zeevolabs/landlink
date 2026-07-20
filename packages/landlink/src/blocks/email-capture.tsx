@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { defineBlock } from "./define-block";
+import type { LandlinkStrings } from "../strings";
 
 export const emailCaptureData = z.object({
   heading: z.string().optional(),
@@ -20,7 +21,8 @@ function EmailCapture({
   buttonText = "Subscribe",
   successMessage = "Thank you!",
   endpoint,
-}: EmailCaptureBlock) {
+  strings,
+}: EmailCaptureBlock & { strings?: LandlinkStrings }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
@@ -67,7 +69,7 @@ function EmailCapture({
         </button>
       </form>
       {status === "error" && (
-        <p className="ll-email-error">Something went wrong. Please try again.</p>
+        <p className="ll-email-error">{strings?.emailCaptureError ?? "Something went wrong. Please try again."}</p>
       )}
     </div>
   );

@@ -6,3 +6,5 @@ export { createAdminGateway } from "./next";
 export type { AdminGatewayOptions } from "./next";
 export { zodToFields } from "./zod-to-fields";
 export type { FieldDescriptor } from "./zod-to-fields";
+export type { AdminStrings } from "./strings";
+export { en, ptBR } from "./strings";

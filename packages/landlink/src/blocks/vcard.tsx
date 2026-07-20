@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { defineBlock } from "./define-block";
+import type { LandlinkStrings } from "../strings";
 
 export const vcardData = z.object({
   name: z.string().min(1),
@@ -35,7 +36,7 @@ function buildVcf(data: VcardBlock): string {
   return lines.join("\r\n");
 }
 
-function VcardButton({ name, title, email, phone, website, company, address, note, type }: VcardBlock) {
+function VcardButton({ name, title, email, phone, website, company, address, note, type, strings }: VcardBlock & { strings?: LandlinkStrings }) {
   const [downloaded, setDownloaded] = useState(false);
 
   const download = () => {
@@ -51,6 +52,9 @@ function VcardButton({ name, title, email, phone, website, company, address, not
     setTimeout(() => setDownloaded(false), 2000);
   };
 
+  const saveLabel = strings?.vcardSave ?? "Save contact";
+  const savedLabel = strings?.vcardSaved ?? "Contact saved!";
+
   return (
     <button type="button" className="ll-vcard" onClick={download}>
       <span className="ll-vcard-icon" aria-hidden="true">
@@ -59,7 +63,7 @@ function VcardButton({ name, title, email, phone, website, company, address, not
         </svg>
       </span>
       <span className="ll-vcard-text">
-        <span className="ll-vcard-label">{downloaded ? "Contato salvo!" : `Salvar contato`}</span>
+        <span className="ll-vcard-label">{downloaded ? savedLabel : saveLabel}</span>
         {name && !downloaded && <span className="ll-vcard-name">{name}{title ? ` · ${title}` : ""}</span>}
       </span>
     </button>

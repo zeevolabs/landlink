@@ -36,9 +36,9 @@ export const socialData = z.object({
 
 export type SocialBlock = z.infer<typeof socialData> & { type: "social" };
 
-function SocialBar({ items }: SocialBlock) {
+function SocialBar({ items, strings }: SocialBlock & { strings?: { socialAriaLabel: string } }) {
   return (
-    <nav className="ll-social" aria-label="Social links">
+    <nav className="ll-social" aria-label={strings?.socialAriaLabel ?? "Social links"}>
       {items.map((item) => (
         <a
           key={item.url}

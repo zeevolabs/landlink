@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { AdminStrings } from "../strings";
 
 export interface SocialPlatform {
   id: string;
@@ -68,9 +69,23 @@ export interface SocialItem {
 export interface SocialEditorProps {
   items: SocialItem[];
   onChange: (items: SocialItem[]) => void;
+  strings: AdminStrings;
 }
 
-export function SocialEditor({ items, onChange }: SocialEditorProps) {
+const PLATFORM_STRING_KEY: Record<string, keyof AdminStrings> = {
+  instagram: "platformInstagram",
+  tiktok: "platformTikTok",
+  facebook: "platformFacebook",
+  whatsapp: "platformWhatsApp",
+  x: "platformX",
+  youtube: "platformYouTube",
+  linkedin: "platformLinkedIn",
+  pinterest: "platformPinterest",
+  threads: "platformThreads",
+  spotify: "platformSpotify",
+};
+
+export function SocialEditor({ items, onChange, strings }: SocialEditorProps) {
   const updateItem = (index: number, updates: Partial<SocialItem>) => {
     const next = items.map((item, i) => (i === index ? { ...item, ...updates } : item));
     onChange(next);
@@ -82,7 +97,8 @@ export function SocialEditor({ items, onChange }: SocialEditorProps) {
     const usedIds = new Set(items.map((i) => i.platform));
     const available = PLATFORMS.find((p) => !usedIds.has(p.id));
     if (!available) return;
-    onChange([...items, { platform: available.id, url: "", label: available.label }]);
+    const platformLabel = strings[PLATFORM_STRING_KEY[available.id] ?? "platformInstagram"] ?? available.label;
+    onChange([...items, { platform: available.id, url: "", label: platformLabel }]);
   };
 
   const [openAdd, setOpenAdd] = useState(false);
@@ -131,12 +147,12 @@ export function SocialEditor({ items, onChange }: SocialEditorProps) {
                   <path d={platform.svg} />
                 </svg>
               </div>
-              <span className="lla-social-item-name">{platform.label}</span>
+              <span className="lla-social-item-name">{strings[PLATFORM_STRING_KEY[platform.id] ?? "platformInstagram"] ?? platform.label}</span>
               <button
                 type="button"
                 className="lla-social-item-remove"
                 onClick={() => removeItem(i)}
-                title="Remover"
+                title={strings.socialRemove}
               >
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -170,7 +186,7 @@ export function SocialEditor({ items, onChange }: SocialEditorProps) {
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            Adicionar rede social
+            {strings.socialAddPlatform}
           </button>
           {openAdd && (
             <div
@@ -178,22 +194,25 @@ export function SocialEditor({ items, onChange }: SocialEditorProps) {
               className="lla-social-add-menu"
               style={{ position: "fixed", top: menuPos.top, left: menuPos.left, width: menuPos.width }}
             >
-              {availablePlatforms.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  className="lla-social-add-option"
-                  onClick={() => {
-                    onChange([...items, { platform: p.id, url: "", label: p.label }]);
-                    setOpenAdd(false);
-                  }}
-                >
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                    <path d={p.svg} />
-                  </svg>
-                  {p.label}
-                </button>
-              ))}
+              {availablePlatforms.map((p) => {
+                const platformLabel = strings[PLATFORM_STRING_KEY[p.id] ?? "platformInstagram"] ?? p.label;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className="lla-social-add-option"
+                    onClick={() => {
+                      onChange([...items, { platform: p.id, url: "", label: platformLabel }]);
+                      setOpenAdd(false);
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                      <path d={p.svg} />
+                    </svg>
+                    {platformLabel}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

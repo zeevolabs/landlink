@@ -4,6 +4,7 @@ import { useState } from "react";
 import { linkData } from "./link";
 import { defineBlock } from "./define-block";
 import { iconPaths } from "../icons";
+import type { LandlinkStrings } from "../strings";
 
 type Props = {
   label: string;
@@ -14,9 +15,10 @@ type Props = {
   locked?: boolean;
   pin?: string;
   analyticsPath?: string;
+  strings?: LandlinkStrings;
 };
 
-function LockedLinkButton({ label, url, description, variant = "fill", icon, locked, pin, analyticsPath }: Props) {
+function LockedLinkButton({ label, url, description, variant = "fill", icon, locked, pin, analyticsPath, strings }: Props) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
@@ -78,15 +80,21 @@ function LockedLinkButton({ label, url, description, variant = "fill", icon, loc
       </button>
 
       {open && (
-        <div className="ll-pin-overlay" role="dialog" aria-modal="true" aria-label="Acesso protegido" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
+        <div
+          className="ll-pin-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label={strings?.lockedDialogLabel ?? "Protected access"}
+          onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
+        >
           <div className="ll-pin-modal">
             <div className="ll-pin-lock-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
             </div>
-            <p className="ll-pin-title">Conteúdo protegido</p>
-            <p className="ll-pin-subtitle">Digite o código para acessar</p>
+            <p className="ll-pin-title">{strings?.lockedTitle ?? "Protected content"}</p>
+            <p className="ll-pin-subtitle">{strings?.lockedSubtitle ?? "Enter the code to access"}</p>
             <form onSubmit={handleSubmit} className="ll-pin-form">
               <input
                 id="ll-pin-input"
@@ -95,14 +103,14 @@ function LockedLinkButton({ label, url, description, variant = "fill", icon, loc
                 className={`ll-pin-input ${error ? "error" : ""}`}
                 value={input}
                 onChange={(e) => { setInput(e.target.value); setError(false); }}
-                placeholder="Código"
+                placeholder={strings?.lockedPlaceholder ?? "Code"}
                 autoFocus
                 autoComplete="off"
               />
-              {error && <p className="ll-pin-error">Código incorreto</p>}
-              <button type="submit" className="ll-pin-submit">Acessar</button>
+              {error && <p className="ll-pin-error">{strings?.lockedIncorrect ?? "Incorrect code"}</p>}
+              <button type="submit" className="ll-pin-submit">{strings?.lockedSubmit ?? "Access"}</button>
             </form>
-            <button type="button" className="ll-pin-cancel" onClick={() => setOpen(false)}>Cancelar</button>
+            <button type="button" className="ll-pin-cancel" onClick={() => setOpen(false)}>{strings?.lockedCancel ?? "Cancel"}</button>
           </div>
         </div>
       )}
