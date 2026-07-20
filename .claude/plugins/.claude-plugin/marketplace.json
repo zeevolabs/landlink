@@ -1,0 +1,13 @@
+{
+  "name": "ccmd",
+  "owner": {
+    "name": "ccmd"
+  },
+  "plugins": [
+    {
+      "name": "review-plugin",
+      "source": "./review-plugin",
+      "description": "Interactive PR code reviewer for Claude Code"
+    }
+  ]
+}

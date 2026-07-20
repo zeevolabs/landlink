@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "review-plugin@ccmd": true
+  },
+  "extraKnownMarketplaces": {
+    "ccmd": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/guilherme/git/landlink/.claude/plugins"
+      }
+    }
+  }
+}

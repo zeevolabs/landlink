@@ -330,8 +330,23 @@ function PasswordGate({ basePath, onAuth, strings }: { basePath: string; onAuth:
 
 // --- Field Components ---
 
+function formatFieldLabel(name: string): string {
+  const map: Record<string, string> = {
+    name: "Nome",
+    durationMinutes: "Duração (min)",
+    price: "Preço (R$)",
+    description: "Descrição",
+    buttonText: "Texto do botão",
+    title: "Título",
+    label: "Label",
+    url: "URL",
+    platform: "Plataforma",
+  };
+  return map[name] ?? name.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
+}
+
 function FormField({ label, value, onChange, multiline, placeholder, type = "text" }: {
-  label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string; type?: "text" | "url" | "datetime-local";
+  label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string; type?: "text" | "url" | "datetime-local" | "number";
 }) {
   return (
     <div className="lla-form-field">
@@ -382,32 +397,41 @@ function ToggleField({ label, value, onChange }: {
 function ArrayField({ label, fields, items, onChange }: {
   label: string; fields: FieldDescriptor[]; items: Record<string, unknown>[]; onChange: (items: Record<string, unknown>[]) => void;
 }) {
-  const updateItem = (index: number, key: string, value: unknown) => {
-    const next = items.map((item, i) => i === index ? { ...item, [key]: value } : item);
+  const updateItem = (index: number, key: string, value: unknown, asNumber = false) => {
+    const v = asNumber ? (parseFloat(String(value)) || 0) : value;
+    const next = items.map((item, i) => i === index ? { ...item, [key]: v } : item);
     onChange(next);
   };
   const removeItem = (index: number) => onChange(items.filter((_, i) => i !== index));
   const addItem = () => {
     const empty: Record<string, unknown> = {};
-    for (const f of fields) empty[f.name] = "";
+    for (const f of fields) empty[f.name] = f.type === "number" ? 0 : "";
     onChange([...items, empty]);
   };
 
   return (
     <div className="lla-form-field">
-      <span className="lla-form-label">{label}</span>
+      <span className="lla-form-label">{formatFieldLabel(label)}</span>
       {items.map((item, i) => (
         <div key={i} className="lla-array-item">
-          <button type="button" className="lla-btn-icon lla-danger lla-array-item-remove" onClick={() => removeItem(i)}>
-            <IconTrash />
-          </button>
+          <div className="lla-array-item-header">
+            <button type="button" className="lla-btn-icon lla-danger" onClick={() => removeItem(i)}>
+              <IconTrash />
+            </button>
+          </div>
           {fields.map((f) => (
-            <FormField key={f.name} label={f.name} value={String(item[f.name] ?? "")} onChange={(v) => updateItem(i, f.name, v)} />
+            <FormField
+              key={f.name}
+              label={formatFieldLabel(f.name)}
+              value={String(item[f.name] ?? (f.type === "number" ? "0" : ""))}
+              onChange={(v) => updateItem(i, f.name, v, f.type === "number")}
+              type={f.type === "number" ? "number" : "text"}
+            />
           ))}
         </div>
       ))}
       <button type="button" className="lla-btn-add" onClick={addItem}>
-        <IconPlus /> Adicionar {label.toLowerCase()}
+        <IconPlus /> Adicionar {formatFieldLabel(label).toLowerCase()}
       </button>
     </div>
   );

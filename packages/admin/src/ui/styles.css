@@ -1046,13 +1046,11 @@ select.lla-form-input {
   background: var(--lla-bg);
   border-radius: 8px;
   border: 1px solid var(--lla-border);
-  position: relative;
 }
 
-.lla-array-item-remove {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+.lla-array-item-header {
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* --- Save bar --- */

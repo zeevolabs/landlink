@@ -1,0 +1,12 @@
+version: "1.0"
+lockfileVersion: 1
+commands: {}
+plugins:
+    review-plugin:
+        name: review-plugin
+        version: 1.0.0
+        source: gifflet/review-plugin
+        resolved: gifflet/review-plugin@main
+        commit: 49d8a5108938f4ab9dc1a56ea9b1a8ddd3486fa4
+        installed_at: 2026-06-19T10:16:30.434646-03:00
+        updated_at: 2026-06-19T10:16:30.434646-03:00
