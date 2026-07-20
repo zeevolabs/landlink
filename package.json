@@ -10,5 +10,13 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "dependencies": {
+    "@zeevolabs/landlink": "0.3.0-alpha.18",
+    "@zeevolabs/landlink-admin": "0.2.0-alpha.18",
+    "@zeevolabs/landlink-analytics": "0.1.0-alpha.18",
+    "@zeevolabs/landlink-booking": "0.2.0-alpha.17",
+    "@zeevolabs/landlink-store-fs": "0.2.0-alpha.17",
+    "@zeevolabs/landlink-store-vercel-blob": "0.2.0-alpha.17"
+  }
 }
