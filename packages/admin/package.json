@@ -1,6 +1,6 @@
 {
   "name": "@zeevolabs/landlink-admin",
-  "version": "0.2.0-alpha.27",
+  "version": "0.2.0-alpha.28",
   "description": "Optional admin panel extension for Landlink with pluggable config storage.",
   "license": "MIT",
   "type": "module",
