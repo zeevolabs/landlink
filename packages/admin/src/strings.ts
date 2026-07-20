@@ -109,6 +109,7 @@ export interface AdminStrings {
   seoKeywordsLabel: string;
   seoPreviewSection: string;
   seoQrSection: string;
+  seoGoogleVerification: string;
 
   // SEO preview defaults
   seoPreviewGoogle: string;
@@ -284,6 +285,7 @@ export const en: AdminStrings = {
   seoKeywordsLabel: "Keywords (comma-separated)",
   seoPreviewSection: "Preview",
   seoQrSection: "QR Code",
+  seoGoogleVerification: "Google Search Console verification",
 
   // SEO preview defaults
   seoPreviewGoogle: "Google",
@@ -459,6 +461,7 @@ export const ptBR: AdminStrings = {
   seoKeywordsLabel: "Palavras-chave (separadas por vírgula)",
   seoPreviewSection: "Preview",
   seoQrSection: "QR Code",
+  seoGoogleVerification: "Verificação Google Search Console",
 
   // SEO preview defaults
   seoPreviewGoogle: "Google",

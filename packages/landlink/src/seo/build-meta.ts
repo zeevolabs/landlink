@@ -5,6 +5,7 @@ export interface LandlinkMetadata {
   description: string;
   keywords?: string[];
   alternates?: { canonical?: string };
+  verification?: { google?: string };
   openGraph: {
     title: string;
     description: string;
@@ -70,6 +71,10 @@ export function buildMeta(config: Config): LandlinkMetadata {
     const handle = twitterHandle.startsWith("@") ? twitterHandle : `@${twitterHandle}`;
     result.twitter.site = handle;
     result.twitter.creator = handle;
+  }
+
+  if (meta?.googleVerification) {
+    result.verification = { google: meta.googleVerification };
   }
 
   return result;

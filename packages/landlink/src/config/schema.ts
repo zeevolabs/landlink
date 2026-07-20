@@ -29,5 +29,6 @@ export const metaSchema = z
     locale: z.string(),
     twitterHandle: z.string(),
     keywords: z.array(z.string()),
+    googleVerification: z.string(),
   })
   .partial();

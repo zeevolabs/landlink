@@ -38,6 +38,7 @@ interface Config {
     locale?: string;
     twitterHandle?: string;
     keywords?: string[];
+    googleVerification?: string;
   };
   blocks: Block[];
 }
@@ -1224,6 +1225,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                       placeholder="keyword1, keyword2, keyword3"
                     />
                   </div>
+                  <FormField label={strings.seoGoogleVerification} value={config.meta?.googleVerification ?? ""} onChange={(v) => updateMeta("googleVerification", v)} placeholder="código de verificação do Google" />
                 </div>
               </div>
               <div className="lla-section">

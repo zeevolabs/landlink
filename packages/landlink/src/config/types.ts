@@ -16,6 +16,7 @@ export interface Meta {
   locale?: string;
   twitterHandle?: string;
   keywords?: string[];
+  googleVerification?: string;
 }
 
 export type CustomBlock = { type: string } & Record<string, unknown>;
