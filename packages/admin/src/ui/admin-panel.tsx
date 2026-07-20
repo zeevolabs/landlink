@@ -338,9 +338,16 @@ function formatFieldLabel(name: string): string {
     description: "Descrição",
     buttonText: "Texto do botão",
     title: "Título",
-    label: "Label",
+    label: "Rótulo",
     url: "URL",
     platform: "Plataforma",
+    services: "Serviços",
+    items: "Itens",
+    icon: "Ícone",
+    targetDate: "Data alvo",
+    src: "Fonte",
+    text: "Texto",
+    endpoint: "Endpoint",
   };
   return map[name] ?? name.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
 }
@@ -472,7 +479,7 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
             if (field.name === "icon") {
               return (
                 <div key={field.name} className="lla-form-field">
-                  <span className="lla-form-label">{field.name}</span>
+                  <span className="lla-form-label">{formatFieldLabel(field.name)}</span>
                   <IconPicker
                     value={String(block[field.name] ?? "")}
                     onChange={(v) => onChange({ ...block, [field.name]: v })}
@@ -485,7 +492,7 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
               return (
                 <SelectField
                   key={field.name}
-                  label={field.name}
+                  label={formatFieldLabel(field.name)}
                   value={String(block[field.name] ?? field.options[0])}
                   onChange={(v) => onChange({ ...block, [field.name]: v })}
                   options={field.options}
@@ -496,7 +503,7 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
               return (
                 <ToggleField
                   key={field.name}
-                  label={field.name}
+                  label={formatFieldLabel(field.name)}
                   value={Boolean(block[field.name])}
                   onChange={(v) => onChange({ ...block, [field.name]: v })}
                 />
@@ -507,7 +514,7 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
             return (
               <FormField
                 key={field.name}
-                label={field.name}
+                label={formatFieldLabel(field.name)}
                 value={String(block[field.name] ?? "")}
                 onChange={(v) => onChange({ ...block, [field.name]: v })}
                 type={isDatetime ? "datetime-local" : isUrl ? "url" : "text"}

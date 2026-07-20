@@ -1,6 +1,6 @@
 {
   "name": "create-landlink",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "description": "Interactive CLI to scaffold a landlink.config.ts for your link-in-bio page.",
   "license": "MIT",
   "type": "module",
