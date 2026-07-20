@@ -476,6 +476,326 @@
   100% { transform: translate(40px, -35px) rotate(-180deg); }
 }
 
+/* --- Testimonial Block --- */
+.ll-testimonial {
+  background: var(--ll-surface, rgba(255,255,255,0.06));
+  border: 1px solid var(--ll-border, rgba(0,0,0,0.1));
+  border-radius: var(--ll-radius, 8px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ll-testimonial-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.ll-star {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.ll-star-filled {
+  color: var(--ll-accent, #f59e0b);
+}
+
+.ll-star-empty {
+  color: var(--ll-border, #d1d5db);
+}
+
+.ll-testimonial-quote {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ll-fg, inherit);
+  margin: 0;
+  font-style: italic;
+}
+
+.ll-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ll-testimonial-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ll-testimonial-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ll-fg, inherit);
+  margin: 0;
+}
+
+.ll-testimonial-role {
+  font-size: 0.75rem;
+  color: var(--ll-muted, rgba(0,0,0,0.5));
+  margin: 0;
+}
+
+/* RSS feed block */
+.ll-rss {
+  background: var(--ll-card-bg, transparent);
+  border: 1px solid var(--ll-border, #e5e7eb);
+  border-radius: var(--ll-radius, 14px);
+  padding: 16px 20px;
+}
+
+.ll-rss-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ll-muted, rgba(0,0,0,0.5));
+  margin: 0 0 12px;
+}
+
+.ll-rss-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ll-rss-item {
+  border-bottom: 1px solid var(--ll-border, #e5e7eb);
+  padding: 10px 0;
+}
+
+.ll-rss-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ll-rss-item:first-child {
+  padding-top: 0;
+}
+
+.ll-rss-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ll-rss-link:hover .ll-rss-item-title {
+  color: var(--ll-accent, #111827);
+}
+
+.ll-rss-item-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ll-fg, #111827);
+  transition: color 0.15s;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ll-rss-item-date {
+  font-size: 0.75rem;
+  color: var(--ll-muted, rgba(0,0,0,0.5));
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ll-rss-item-desc {
+  font-size: 0.8rem;
+  color: var(--ll-muted, rgba(0,0,0,0.5));
+  margin: 6px 0 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* vCard block */
+.ll-vcard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--ll-card-bg, transparent);
+  border: 1px solid var(--ll-border, #e5e7eb);
+  border-radius: var(--ll-radius, 14px);
+  box-shadow: var(--ll-shadow, none);
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 0.15s, transform 0.15s;
+  color: inherit;
+  font-family: inherit;
+}
+
+.ll-vcard:hover {
+  opacity: 0.85;
+}
+
+.ll-vcard:active {
+  transform: scale(0.99);
+}
+
+.ll-vcard-icon {
+  color: var(--ll-accent, #111827);
+  flex-shrink: 0;
+  display: flex;
+}
+
+.ll-vcard-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ll-vcard-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ll-fg, #111827);
+}
+
+.ll-vcard-name {
+  font-size: 0.78rem;
+  color: var(--ll-muted, rgba(0,0,0,0.5));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Locked link */
+.ll-link-locked {
+  cursor: default;
+  opacity: 0.75;
+}
+
+/* PIN modal */
+.ll-pin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.ll-pin-modal {
+  background: var(--ll-bg, #fff);
+  border: 1px solid var(--ll-border, #e5e7eb);
+  border-radius: var(--ll-radius, 14px);
+  padding: 32px 24px 24px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.ll-pin-lock-icon {
+  color: var(--ll-accent, #111827);
+  margin-bottom: 4px;
+}
+
+.ll-pin-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ll-fg, #111827);
+  margin: 0;
+}
+
+.ll-pin-subtitle {
+  font-size: 0.85rem;
+  color: var(--ll-muted, #6b7280);
+  margin: 0 0 8px;
+}
+
+.ll-pin-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ll-pin-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border-radius: calc(var(--ll-radius, 14px) * 0.6);
+  border: 1.5px solid var(--ll-border, #e5e7eb);
+  background: transparent;
+  color: var(--ll-fg, #111827);
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 0.2em;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.ll-pin-input:focus {
+  border-color: var(--ll-accent, #111827);
+}
+
+.ll-pin-input.error {
+  border-color: #ef4444;
+}
+
+.ll-pin-error {
+  font-size: 0.8rem;
+  color: #ef4444;
+  margin: 0;
+  text-align: center;
+}
+
+.ll-pin-submit {
+  width: 100%;
+  padding: 10px;
+  background: var(--ll-accent, #111827);
+  color: var(--ll-accent-contrast, #fff);
+  border: none;
+  border-radius: calc(var(--ll-radius, 14px) * 0.6);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ll-pin-submit:hover {
+  opacity: 0.85;
+}
+
+.ll-pin-cancel {
+  background: none;
+  border: none;
+  color: var(--ll-muted, #6b7280);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px;
+  margin-top: 2px;
+}
+
+.ll-pin-cancel:hover {
+  color: var(--ll-fg, #111827);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ll-anim-gradient,
   .ll-anim-aurora::before,

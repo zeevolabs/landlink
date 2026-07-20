@@ -14,9 +14,11 @@ export interface LandlinkProps {
   adminPath?: string;
   /** Base path for API endpoints used by interactive blocks. Default: "/api" */
   apiBasePath?: string;
+  /** Base path for the analytics API. When set, link clicks are tracked via redirect. */
+  analyticsPath?: string;
 }
 
-export function Landlink({ config, registry = defaultRegistry, className, adminPath, apiBasePath = "/api" }: LandlinkProps) {
+export function Landlink({ config, registry = defaultRegistry, className, adminPath, apiBasePath = "/api", analyticsPath }: LandlinkProps) {
   const resolved = resolveTheme(config.theme);
   const animClass = resolved.bgAnimation !== "none" ? resolved.bgAnimation : "";
   const rootClass = ["ll-root", animClass, className].filter(Boolean).join(" ");
@@ -30,7 +32,7 @@ export function Landlink({ config, registry = defaultRegistry, className, adminP
               const definition = registry.resolve(block.type);
               if (!definition) return null;
               const Block = definition.component;
-              return <Block key={index} {...block} apiBasePath={apiBasePath} />;
+              return <Block key={index} {...block} apiBasePath={apiBasePath} analyticsPath={analyticsPath} />;
             })}
           </div>
           {adminPath && (

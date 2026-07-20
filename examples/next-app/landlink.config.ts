@@ -23,6 +23,14 @@ export const config = defineConfig({
     },
     { type: "link", label: "Blog", url: "https://alexrivera.dev/blog", variant: "outline" },
     { type: "link", label: "Resume", url: "/resume.pdf", variant: "outline" },
+    { type: "link", label: "Exclusive Content", url: "https://alexrivera.dev/exclusive", variant: "fill", locked: true, pin: "1234" },
+    {
+      type: "vcard",
+      name: "Alex Rivera",
+      title: "Full-stack Developer",
+      email: "alex@alexrivera.dev",
+      website: "https://alexrivera.dev",
+    },
     { type: "heading", text: "Social" },
     {
       type: "social",

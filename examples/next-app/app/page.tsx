@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { trackPageView } from "@zeevolabs/landlink-analytics";
 import { config } from "../landlink.config";
 import { ClientLandlink } from "./client-landlink";
 
@@ -18,6 +19,7 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default function Page() {
-  return <ClientLandlink config={config} />;
+export default async function Page() {
+  await trackPageView({ pageId: "main" }).catch(() => {});
+  return <ClientLandlink config={config} analyticsPath="/api/analytics" />;
 }

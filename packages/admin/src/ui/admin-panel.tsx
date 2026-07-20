@@ -34,7 +34,7 @@ interface Config {
 }
 
 type SchemaMap = Record<string, FieldDescriptor[]>;
-type Tab = "content" | "bookings" | "theme" | "settings";
+type Tab = "content" | "bookings" | "analytics" | "theme" | "settings";
 type SettingsSection = "seo" | "integrations";
 
 export type UploadAvatarFn = (file: File) => Promise<string>;
@@ -43,6 +43,15 @@ export interface AdminPanelProps {
   registry: Registry;
   basePath?: string;
   onUploadAvatar?: UploadAvatarFn;
+  /** Base path for the analytics API (e.g. "/api/analytics"). Enables the Analytics tab. */
+  analyticsPath?: string;
+}
+
+interface AnalyticsStats {
+  pageId: string;
+  totalViews: number;
+  last7Days: { date: string; count: number }[];
+  blocks: { id: string; totalClicks: number; last7Days: { date: string; count: number }[] }[];
 }
 
 function getPassword(): string {
@@ -168,6 +177,87 @@ function IconLogout() {
   );
 }
 
+function IconBarChart() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
+    </svg>
+  );
+}
+
+// --- Analytics Tab ---
+
+function BarChart({ data }: { data: { label: string; value: number }[] }) {
+  const max = Math.max(...data.map((d) => d.value), 1);
+  return (
+    <div className="lla-bar-chart">
+      {data.map((d) => (
+        <div key={d.label} className="lla-bar-col">
+          <div className="lla-bar-track">
+            <div className="lla-bar-fill" style={{ height: `${Math.round((d.value / max) * 100)}%` }} />
+          </div>
+          <span className="lla-bar-label">{d.label.slice(5)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AnalyticsTab({ analyticsPath }: { analyticsPath: string }) {
+  const [stats, setStats] = useState<AnalyticsStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetch(`${analyticsPath}/stats`)
+      .then((r) => {
+        if (!r.ok) throw new Error("failed");
+        return r.json() as Promise<AnalyticsStats>;
+      })
+      .then((data) => { setStats(data); setLoading(false); })
+      .catch(() => { setError(true); setLoading(false); });
+  }, [analyticsPath]);
+
+  if (loading) {
+    return <div className="lla-section"><div className="lla-card"><p style={{ color: "var(--lla-text-secondary)" }}>Carregando...</p></div></div>;
+  }
+
+  if (error || !stats) {
+    return <div className="lla-section"><div className="lla-card"><p style={{ color: "var(--lla-text-secondary)" }}>Erro ao carregar analytics. Verifique se o endpoint está configurado.</p></div></div>;
+  }
+
+  return (
+    <>
+      <div className="lla-section">
+        <h3 className="lla-section-title">Visualizações</h3>
+        <div className="lla-card">
+          <p className="lla-analytics-total">{stats.totalViews.toLocaleString("pt-BR")}</p>
+          <p className="lla-analytics-subtitle">visualizações totais</p>
+          <BarChart data={stats.last7Days.map((d) => ({ label: d.date, value: d.count }))} />
+        </div>
+      </div>
+
+      <div className="lla-section">
+        <h3 className="lla-section-title">Cliques por link</h3>
+        <div className="lla-card">
+          {stats.blocks.length === 0 ? (
+            <p className="lla-analytics-empty">Nenhum clique registrado ainda.</p>
+          ) : (
+            <div className="lla-analytics-table">
+              {stats.blocks.map((block) => (
+                <div key={block.id} className="lla-analytics-row">
+                  <span className="lla-analytics-block-id">{block.id}</span>
+                  <span className="lla-analytics-block-count">{block.totalClicks.toLocaleString("pt-BR")} cliques</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 function IconPlus() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -238,7 +328,7 @@ function PasswordGate({ basePath, onAuth }: { basePath: string; onAuth: () => vo
 // --- Field Components ---
 
 function FormField({ label, value, onChange, multiline, placeholder, type = "text" }: {
-  label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string; type?: "text" | "url";
+  label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string; type?: "text" | "url" | "datetime-local";
 }) {
   return (
     <div className="lla-form-field">
@@ -384,14 +474,15 @@ function BlockCard({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, is
                 />
               );
             }
-            const isUrl = ["url", "href", "src"].includes(field.name);
+            const isUrl = ["url", "href", "src", "endpoint"].includes(field.name);
+            const isDatetime = ["targetDate"].includes(field.name);
             return (
               <FormField
                 key={field.name}
                 label={field.name}
                 value={String(block[field.name] ?? "")}
                 onChange={(v) => onChange({ ...block, [field.name]: v })}
-                type={isUrl ? "url" : "text"}
+                type={isDatetime ? "datetime-local" : isUrl ? "url" : "text"}
               />
             );
           })}
@@ -723,14 +814,16 @@ function AddBlockDropdown({ types, onAdd }: { types: string[]; onAdd: (type: str
 
 interface TabDef { id: Tab; label: string; icon: () => React.ReactNode; hidden?: boolean }
 
-function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, bookingConnected }: {
+function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, bookingConnected, analyticsPath }: {
   tab: Tab; onTab: (t: Tab) => void; onLogout: () => void;
   settingsSection: SettingsSection; onSettingsSection: (s: SettingsSection) => void;
   bookingConnected: boolean;
+  analyticsPath?: string;
 }) {
   const tabs: TabDef[] = [
     { id: "content", label: "Conteúdo", icon: IconContent },
     { id: "bookings", label: "Agenda", icon: IconCalendar, hidden: !bookingConnected },
+    { id: "analytics", label: "Analytics", icon: IconBarChart, hidden: !analyticsPath },
     { id: "theme", label: "Aparência", icon: IconTheme },
     { id: "settings", label: "Config", icon: IconSettings },
   ];
@@ -757,10 +850,11 @@ function Sidebar({ tab, onTab, onLogout, settingsSection, onSettingsSection, boo
   );
 }
 
-function MobileTabs({ tab, onTab, bookingConnected }: { tab: Tab; onTab: (t: Tab) => void; bookingConnected: boolean }) {
+function MobileTabs({ tab, onTab, bookingConnected, analyticsPath }: { tab: Tab; onTab: (t: Tab) => void; bookingConnected: boolean; analyticsPath?: string }) {
   const tabs: TabDef[] = [
     { id: "content", label: "Conteúdo", icon: IconContent },
     { id: "bookings", label: "Agenda", icon: IconCalendar, hidden: !bookingConnected },
+    { id: "analytics", label: "Analytics", icon: IconBarChart, hidden: !analyticsPath },
     { id: "theme", label: "Aparência", icon: IconTheme },
     { id: "settings", label: "Config", icon: IconSettings },
   ];
@@ -817,7 +911,7 @@ function IntegrationAccordion({ basePath, bookingAvailable, onBookingConnected }
 
 // --- Main Admin Shell ---
 
-function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry: Registry; basePath: string; onLogout: () => void; onUploadAvatar?: UploadAvatarFn }) {
+function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPath }: { registry: Registry; basePath: string; onLogout: () => void; onUploadAvatar?: UploadAvatarFn; analyticsPath?: string }) {
   const [config, setConfig] = useState<Config | null>(null);
   const [savedConfig, setSavedConfig] = useState<Config | null>(null);
   const [schemas, setSchemas] = useState<SchemaMap>({});
@@ -946,7 +1040,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
   return (
     <div className="lla-admin-root">
       <div className="lla-layout">
-        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} settingsSection={settingsSection} onSettingsSection={setSettingsSection} bookingConnected={bookingConnected} />
+        <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} settingsSection={settingsSection} onSettingsSection={setSettingsSection} bookingConnected={bookingConnected} analyticsPath={analyticsPath} />
         <main className="lla-main">
           {tab === "content" && (
             <>
@@ -1015,6 +1109,10 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
 
           {tab === "bookings" && (
             <BookingList bookingBasePath={`${basePath}/booking`} />
+          )}
+
+          {tab === "analytics" && analyticsPath && (
+            <AnalyticsTab analyticsPath={analyticsPath} />
           )}
 
           {tab === "theme" && <ThemeTab theme={config.theme ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} />}
@@ -1091,7 +1189,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
           <PreviewFrame><Landlink config={config} registry={registry} /></PreviewFrame>
         </aside>
 
-        <MobileTabs tab={tab} onTab={setTab} bookingConnected={bookingConnected} />
+        <MobileTabs tab={tab} onTab={setTab} bookingConnected={bookingConnected} analyticsPath={analyticsPath} />
       </div>
 
       <div className="lla-save-bar">
@@ -1126,7 +1224,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar }: { registry
 
 // --- Exported Component ---
 
-export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar }: AdminPanelProps) {
+export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, analyticsPath }: AdminPanelProps) {
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
@@ -1141,5 +1239,5 @@ export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar }
   };
 
   if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} />;
-  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} onUploadAvatar={onUploadAvatar} />;
+  return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} onUploadAvatar={onUploadAvatar} analyticsPath={analyticsPath} />;
 }
