@@ -1,0 +1,46 @@
+{
+  "name": "create-landlink",
+  "version": "0.1.0-alpha.2",
+  "description": "Interactive CLI to scaffold a landlink.config.ts for your link-in-bio page.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeevolabs/landlink.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "create-landlink": "./bin/create-landlink.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "landlink",
+    "link-in-bio",
+    "create",
+    "scaffold",
+    "cli"
+  ]
+}

@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PACKAGES_DIR = ROOT / "packages"
 
-BUILD_ORDER = ["landlink", "admin", "analytics", "store-fs", "store-vercel-blob", "booking", "store-upstash"]
+BUILD_ORDER = ["landlink", "admin", "analytics", "store-fs", "store-vercel-blob", "booking", "store-upstash", "create-landlink"]
 
 
 def _mask(cmd: list[str]) -> str:
