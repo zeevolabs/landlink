@@ -48,6 +48,8 @@ export interface AdminPanelProps {
   /** Base path for the analytics API (e.g. "/api/analytics"). Enables the Analytics tab. */
   analyticsPath?: string;
   strings?: Partial<AdminStrings>;
+  /** Site name shown at the top of the login screen. */
+  gateTitle?: string;
 }
 
 interface AnalyticsStats {
@@ -279,7 +281,7 @@ function IconUser() {
 
 // --- Password Gate ---
 
-function PasswordGate({ basePath, onAuth, strings }: { basePath: string; onAuth: () => void; strings: AdminStrings }) {
+function PasswordGate({ basePath, onAuth, strings, gateTitle }: { basePath: string; onAuth: () => void; strings: AdminStrings; gateTitle?: string }) {
   const [pw, setPw] = useState("");
   const [error, setError] = useState(false);
 
@@ -299,6 +301,7 @@ function PasswordGate({ basePath, onAuth, strings }: { basePath: string; onAuth:
     <div className="lla-admin-root">
       <div className="lla-gate">
         <form onSubmit={handleSubmit} className="lla-gate-card">
+          {gateTitle && <p className="lla-gate-title">{gateTitle}</p>}
           <div className="lla-gate-icon">
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
@@ -1268,7 +1271,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
 
 // --- Exported Component ---
 
-export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, analyticsPath, strings }: AdminPanelProps) {
+export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, analyticsPath, strings, gateTitle }: AdminPanelProps) {
   const s: AdminStrings = { ...enStrings, ...strings };
   const [authed, setAuthed] = useState(false);
 
@@ -1283,6 +1286,6 @@ export function AdminPanel({ registry, basePath = "/api/admin", onUploadAvatar, 
     setAuthed(false);
   };
 
-  if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} strings={s} />;
+  if (!authed) return <PasswordGate basePath={basePath} onAuth={() => setAuthed(true)} strings={s} gateTitle={gateTitle} />;
   return <AdminShell registry={registry} basePath={basePath} onLogout={handleLogout} onUploadAvatar={onUploadAvatar} analyticsPath={analyticsPath} strings={s} />;
 }

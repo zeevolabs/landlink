@@ -1,6 +1,6 @@
 {
   "name": "@zeevolabs/landlink-analytics",
-  "version": "0.1.0-alpha.18",
+  "version": "0.1.0-alpha.19",
   "description": "Click analytics for Landlink pages using Upstash Redis.",
   "license": "MIT",
   "type": "module",

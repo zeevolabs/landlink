@@ -1,6 +1,6 @@
 {
   "name": "@zeevolabs/landlink",
-  "version": "0.3.0-alpha.18",
+  "version": "0.3.0-alpha.19",
   "description": "Config-driven link-in-bio landing pages for React and Next.js.",
   "license": "MIT",
   "type": "module",

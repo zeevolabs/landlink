@@ -366,10 +366,20 @@
   gap: 16px;
   padding: 32px 28px;
   background: var(--lla-surface);
-  border-radius: var(--lla-radius);
+  border-radius: 14px;
   border: 1px solid var(--lla-border);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   width: 100%;
   max-width: 320px;
+}
+
+.lla-gate-title {
+  margin: 0 0 -4px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--lla-text);
+  letter-spacing: -0.01em;
 }
 
 .lla-gate-icon {
