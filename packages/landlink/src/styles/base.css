@@ -1,5 +1,10 @@
 .ll-root {
-  background: var(--ll-bg);
+  background: radial-gradient(
+    ellipse at 50% 28%,
+    color-mix(in srgb, var(--ll-bg) 80%, #fff) 0%,
+    var(--ll-bg) 55%,
+    color-mix(in srgb, var(--ll-bg) 88%, #000) 100%
+  );
   color: var(--ll-fg);
   font-family: var(--ll-font);
   min-height: 100vh;

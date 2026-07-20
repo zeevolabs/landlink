@@ -39,10 +39,17 @@
   overflow-y: auto;
   background: #fff;
   border-radius: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .lla-preview-screen::-webkit-scrollbar {
   display: none;
+}
+
+.lla-preview-screen .ll-root {
+  min-height: unset;
+  flex: 1;
 }
 
 /* --- Icon Picker --- */
