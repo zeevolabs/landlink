@@ -1,7 +1,7 @@
 import { type SafeParseReturnType, type ZodTypeAny, z } from "zod";
 import { defaultBlocks } from "../blocks";
 import { type Registry, createRegistry } from "../registry/registry";
-import { metaSchema, profileSchema, themeSchema } from "./schema";
+import { effectsSchema, metaSchema, profileSchema, themeSchema } from "./schema";
 import type { Config } from "./types";
 
 type Option = z.ZodDiscriminatedUnionOption<"type">;
@@ -19,6 +19,7 @@ export function configSchema(registry: Registry = defaultRegistry) {
   return z.object({
     profile: profileSchema,
     theme: themeSchema.optional(),
+    effects: effectsSchema,
     meta: metaSchema.optional(),
     blocks: z.array(blockSchema(registry)),
   });
