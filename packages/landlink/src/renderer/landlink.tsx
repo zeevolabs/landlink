@@ -33,6 +33,8 @@ export function Landlink({ config, registry = defaultRegistry, className, adminP
   const rootClass = ["ll-root", animClass, ...fxClasses, className].filter(Boolean).join(" ");
 
   return (
+    <>
+      <style>{`html,body{background:${resolved.bg}}`}</style>
       <div data-landlink className={rootClass} style={applyTheme(config.theme)}>
         {config.effects?.backgroundNoise && <div className="ll-noise-layer" aria-hidden="true" />}
         <main className="ll-container">
@@ -57,5 +59,6 @@ export function Landlink({ config, registry = defaultRegistry, className, adminP
           )}
         </main>
       </div>
+    </>
   );
 }

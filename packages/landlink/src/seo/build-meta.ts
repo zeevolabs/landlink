@@ -1,8 +1,10 @@
 import type { Config } from "../config/types";
+import { resolveTheme } from "../theme/apply-theme";
 
 export interface LandlinkMetadata {
   title: string;
   description: string;
+  themeColor?: string;
   keywords?: string[];
   alternates?: { canonical?: string };
   verification?: { google?: string };
@@ -37,6 +39,7 @@ export function buildMeta(config: Config): LandlinkMetadata {
   const result: LandlinkMetadata = {
     title,
     description,
+    themeColor: resolveTheme(config.theme).bg,
     openGraph: {
       title,
       description,
