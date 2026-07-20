@@ -14,9 +14,15 @@ importers:
 
   examples/next-app:
     dependencies:
+      '@upstash/redis':
+        specifier: ^1.34.0
+        version: 1.38.0
       '@zeevolabs/landlink':
         specifier: workspace:*
         version: link:../../packages/landlink
+      '@zeevolabs/landlink-analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       next:
         specifier: ^15.1.3
         version: 15.5.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -79,6 +85,21 @@ importers:
       zod:
         specifier: ^3.24.1
         version: 3.25.76
+
+  packages/analytics:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.0.0
+        version: 26.0.0
+      '@upstash/redis':
+        specifier: ^1.34.0
+        version: 1.38.0
+      tsup:
+        specifier: ^8.3.5
+        version: 8.5.1(postcss@8.5.15)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
 
   packages/booking:
     devDependencies:
