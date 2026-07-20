@@ -20,9 +20,16 @@ interface Block {
   [key: string]: unknown;
 }
 
+interface Effects {
+  socialIconContainers?: boolean;
+  backgroundNoise?: boolean;
+  avatarGlow?: boolean;
+}
+
 interface Config {
   profile: { name: string; avatar?: string; bio?: string };
   theme?: Record<string, string>;
+  effects?: Effects;
   meta?: {
     title?: string;
     description?: string;
@@ -798,10 +805,15 @@ function PresetPicker({ currentTheme, onSelect, strings }: {
   );
 }
 
-function ThemeTab({ theme, onChange, strings }: {
-  theme: Record<string, string>; onChange: (t: Record<string, string>) => void; strings: AdminStrings;
+function ThemeTab({ theme, effects, onChange, onEffectsChange, strings }: {
+  theme: Record<string, string>;
+  effects: Effects;
+  onChange: (t: Record<string, string>) => void;
+  onEffectsChange: (e: Effects) => void;
+  strings: AdminStrings;
 }) {
   const set = (key: string, value: string) => onChange({ ...theme, [key]: value });
+  const setFx = (key: keyof Effects, value: boolean) => onEffectsChange({ ...effects, [key]: value });
   const shadowPresets = SHADOW_VALUES.map(({ strKey, value }) => ({ label: strings[strKey], value }));
   const animPresets = BG_ANIMATION_VALUES.map(({ strKey, value }) => ({ label: strings[strKey], value }));
   return (
@@ -828,6 +840,14 @@ function ThemeTab({ theme, onChange, strings }: {
           <PresetField label={strings.themeFont} value={theme.font ?? "'Inter', sans-serif"} onChange={(v) => set("font", v)} presets={FONT_OPTIONS} />
           <RangeField label={strings.themeMaxWidth} value={theme.maxWidth ?? "480px"} onChange={(v) => set("maxWidth", v)} min={320} max={720} step={10} unit="px" />
           <PresetField label={strings.themeBgAnimation} value={theme.bgAnimation ?? "none"} onChange={(v) => set("bgAnimation", v)} presets={animPresets} />
+        </div>
+      </div>
+      <div className="lla-section">
+        <h3 className="lla-section-title">{strings.effectsSectionTitle}</h3>
+        <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <ToggleField label={strings.effectsSocialIconContainers} value={!!effects.socialIconContainers} onChange={(v) => setFx("socialIconContainers", v)} />
+          <ToggleField label={strings.effectsBackgroundNoise} value={!!effects.backgroundNoise} onChange={(v) => setFx("backgroundNoise", v)} />
+          <ToggleField label={strings.effectsAvatarGlow} value={!!effects.avatarGlow} onChange={(v) => setFx("avatarGlow", v)} />
         </div>
       </div>
     </>
@@ -1161,7 +1181,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
             <AnalyticsTab analyticsPath={analyticsPath} strings={strings} />
           )}
 
-          {tab === "theme" && <ThemeTab theme={config.theme ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} strings={strings} />}
+          {tab === "theme" && <ThemeTab theme={config.theme ?? {}} effects={config.effects ?? {}} onChange={(t) => setConfig((c) => c ? { ...c, theme: t } : c)} onEffectsChange={(e) => setConfig((c) => c ? { ...c, effects: e } : c)} strings={strings} />}
 
           {tab === "settings" && (
             <div className="lla-settings-tabs-mobile">

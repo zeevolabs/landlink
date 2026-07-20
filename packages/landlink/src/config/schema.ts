@@ -14,6 +14,12 @@ const tokenOverrideSchema = z.object(
 
 export const themeSchema = z.union([z.string(), tokenOverrideSchema.partial()]);
 
+export const effectsSchema = z.object({
+  socialIconContainers: z.boolean().optional(),
+  backgroundNoise: z.boolean().optional(),
+  avatarGlow: z.boolean().optional(),
+}).optional();
+
 export const metaSchema = z
   .object({
     title: z.string(),

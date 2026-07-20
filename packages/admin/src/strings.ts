@@ -165,6 +165,12 @@ export interface AdminStrings {
   iconDocument: string;
   iconFavorite: string;
   iconHighlight: string;
+
+  // Effects section
+  effectsSectionTitle: string;
+  effectsSocialIconContainers: string;
+  effectsBackgroundNoise: string;
+  effectsAvatarGlow: string;
 }
 
 export const en: AdminStrings = {
@@ -334,6 +340,12 @@ export const en: AdminStrings = {
   iconDocument: "Document",
   iconFavorite: "Favorite",
   iconHighlight: "Highlight",
+
+  // Effects section
+  effectsSectionTitle: "Visual Effects",
+  effectsSocialIconContainers: "Social icon containers",
+  effectsBackgroundNoise: "Background texture",
+  effectsAvatarGlow: "Avatar glow",
 };
 
 export const ptBR: AdminStrings = {
@@ -503,4 +515,10 @@ export const ptBR: AdminStrings = {
   iconDocument: "Documento",
   iconFavorite: "Favorito",
   iconHighlight: "Destaque",
+
+  // Effects section
+  effectsSectionTitle: "Efeitos Visuais",
+  effectsSocialIconContainers: "Containers nos ícones sociais",
+  effectsBackgroundNoise: "Textura de fundo",
+  effectsAvatarGlow: "Brilho no avatar",
 };

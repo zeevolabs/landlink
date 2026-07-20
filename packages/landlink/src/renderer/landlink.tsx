@@ -25,10 +25,16 @@ export function Landlink({ config, registry = defaultRegistry, className, adminP
   const s: LandlinkStrings = { ...en, ...strings };
   const resolved = resolveTheme(config.theme);
   const animClass = resolved.bgAnimation !== "none" ? resolved.bgAnimation : "";
-  const rootClass = ["ll-root", animClass, className].filter(Boolean).join(" ");
+  const fxClasses = [
+    config.effects?.socialIconContainers && "ll-fx-icon-containers",
+    config.effects?.backgroundNoise && "ll-fx-noise",
+    config.effects?.avatarGlow && "ll-fx-avatar-glow",
+  ].filter(Boolean);
+  const rootClass = ["ll-root", animClass, ...fxClasses, className].filter(Boolean).join(" ");
 
   return (
       <div data-landlink className={rootClass} style={applyTheme(config.theme)}>
+        {config.effects?.backgroundNoise && <div className="ll-noise-layer" aria-hidden="true" />}
         <main className="ll-container">
           <Profile {...config.profile} strings={s} />
           <div className="ll-blocks">

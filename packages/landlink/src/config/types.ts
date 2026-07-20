@@ -22,9 +22,16 @@ export type CustomBlock = { type: string } & Record<string, unknown>;
 
 export type Block = LinkBlock | SocialBlock | HeadingBlock | ImageBlock | CustomBlock;
 
+export interface Effects {
+  socialIconContainers?: boolean;
+  backgroundNoise?: boolean;
+  avatarGlow?: boolean;
+}
+
 export interface Config {
   profile: Profile;
   theme?: Theme;
+  effects?: Effects;
   meta?: Meta;
   blocks: Block[];
 }
