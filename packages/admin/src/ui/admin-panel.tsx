@@ -1225,7 +1225,7 @@ function AdminShell({ registry, basePath, onLogout, onUploadAvatar, analyticsPat
                       placeholder="keyword1, keyword2, keyword3"
                     />
                   </div>
-                  <FormField label={strings.seoGoogleVerification} value={config.meta?.googleVerification ?? ""} onChange={(v) => updateMeta("googleVerification", v)} placeholder="código de verificação do Google" />
+                  <FormField label={strings.seoGoogleVerification} value={config.meta?.googleVerification ?? ""} onChange={(v) => { const match = v.match(/content="([^"]+)"/); updateMeta("googleVerification", match ? match[1]! : v.trim()); }} placeholder='código ou <meta name="google-site-verification" content="..." />' />
                 </div>
               </div>
               <div className="lla-section">
