@@ -1,6 +1,6 @@
 {
   "name": "@zeevolabs/landlink-store-upstash",
-  "version": "0.2.0-alpha.24",
+  "version": "0.2.0-alpha.25",
   "description": "Upstash Redis private store adapter for Landlink Booking.",
   "license": "MIT",
   "type": "module",
