@@ -1,6 +1,6 @@
 {
   "name": "@zeevolabs/landlink-booking",
-  "version": "0.2.0-alpha.21",
+  "version": "0.2.0-alpha.23",
   "description": "Booking block with Google Calendar integration for Landlink.",
   "license": "MIT",
   "type": "module",
