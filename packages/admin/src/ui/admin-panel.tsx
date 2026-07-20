@@ -836,6 +836,7 @@ function ThemeTab({ theme, effects, onChange, onEffectsChange, strings }: {
       <div className="lla-section">
         <h3 className="lla-section-title">{strings.themeSectionStyle}</h3>
         <div className="lla-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <RangeField label={strings.themeAvatarSize} value={theme.avatarSize ?? "108px"} onChange={(v) => set("avatarSize", v)} min={80} max={200} step={4} unit="px" />
           <RangeField label={strings.themeRoundness} value={theme.radius ?? "8px"} onChange={(v) => set("radius", v)} min={0} max={32} step={1} unit="px" />
           <PresetField label={strings.themeShadow} value={theme.shadow ?? "none"} onChange={(v) => set("shadow", v)} presets={shadowPresets} />
           <PresetField label={strings.themeFont} value={theme.font ?? "'Inter', sans-serif"} onChange={(v) => set("font", v)} presets={FONT_OPTIONS} />

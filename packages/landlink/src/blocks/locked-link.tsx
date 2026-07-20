@@ -10,7 +10,7 @@ type Props = {
   label: string;
   url: string;
   description?: string;
-  variant?: "fill" | "outline";
+  variant?: "fill" | "outline" | "featured";
   icon?: string;
   locked?: boolean;
   pin?: string;

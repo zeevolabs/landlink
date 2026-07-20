@@ -49,6 +49,13 @@
   transform: none;
 }
 
+.ll-booking[data-featured="true"] .ll-booking-trigger {
+  padding: 18px 22px;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  box-shadow: var(--ll-shadow), 0 4px 20px color-mix(in srgb, var(--ll-accent) 25%, transparent);
+}
+
 /* Toast */
 
 @keyframes ll-booking-toast-in {

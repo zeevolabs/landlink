@@ -10,6 +10,7 @@ export const themeTokens = {
   font: "--ll-font",
   maxWidth: "--ll-max-width",
   bgAnimation: "--ll-bg-animation",
+  avatarSize: "--ll-avatar-size",
 } as const;
 
 export type TokenName = keyof typeof themeTokens;

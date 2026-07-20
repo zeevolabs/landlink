@@ -71,6 +71,7 @@ export interface AdminStrings {
   themeFont: string;
   themeMaxWidth: string;
   themeBgAnimation: string;
+  themeAvatarSize: string;
 
   // Theme shadow options
   themeShadowNone: string;
@@ -247,6 +248,7 @@ export const en: AdminStrings = {
   themeFont: "Font",
   themeMaxWidth: "Max width",
   themeBgAnimation: "Background animation",
+  themeAvatarSize: "Avatar size",
 
   // Theme shadow options
   themeShadowNone: "None",
@@ -423,6 +425,7 @@ export const ptBR: AdminStrings = {
   themeFont: "Fonte",
   themeMaxWidth: "Largura máxima",
   themeBgAnimation: "Animação de fundo",
+  themeAvatarSize: "Tamanho do avatar",
 
   // Theme shadow options
   themeShadowNone: "Nenhuma",

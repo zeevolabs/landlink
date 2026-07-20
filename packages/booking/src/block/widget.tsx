@@ -45,7 +45,7 @@ const initialState: BookingState = {
   result: null,
 };
 
-export function BookingWidget({ title, description, buttonText, services, apiBasePath = "/api" }: BookingBlock & { apiBasePath?: string }) {
+export function BookingWidget({ title, description, buttonText, featured, services, apiBasePath = "/api" }: BookingBlock & { apiBasePath?: string }) {
   const [step, setStep] = useState<Step>("closed");
   const [state, setState] = useState<BookingState>(initialState);
   const [submitting, setSubmitting] = useState(false);
@@ -138,7 +138,7 @@ export function BookingWidget({ title, description, buttonText, services, apiBas
   const isOpen = step !== "closed";
 
   return (
-    <div className="ll-booking">
+    <div className="ll-booking" data-featured={featured || undefined}>
       {description && !isOpen && <p className="ll-booking-description">{description}</p>}
       <button
         type="button"

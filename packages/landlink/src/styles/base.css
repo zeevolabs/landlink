@@ -34,8 +34,8 @@
 }
 
 .ll-avatar {
-  width: 108px;
-  height: 108px;
+  width: var(--ll-avatar-size, 108px);
+  height: var(--ll-avatar-size, 108px);
   border-radius: 999px;
   object-fit: cover;
   border: 3px solid var(--ll-accent);
@@ -108,6 +108,13 @@
   background: transparent;
   color: var(--ll-fg);
   border-color: var(--ll-border);
+}
+
+.ll-link[data-variant="featured"] {
+  padding: 18px 22px;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  box-shadow: var(--ll-shadow), 0 4px 20px color-mix(in srgb, var(--ll-accent) 25%, transparent);
 }
 
 .ll-link-icon {

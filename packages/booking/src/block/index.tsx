@@ -6,6 +6,7 @@ export const bookingData = z.object({
   title: z.string().default("Schedule"),
   description: z.string().optional(),
   buttonText: z.string().default("Book now"),
+  featured: z.boolean().optional(),
   services: z
     .array(
       z.object({

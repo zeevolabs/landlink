@@ -15,6 +15,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "none",
+    avatarSize: "108px",
   },
   dark: {
     bg: "#0b0b0f",
@@ -28,6 +29,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "none",
+    avatarSize: "108px",
   },
   rose: {
     bg: "#fdf2f6",
@@ -41,6 +43,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-gradient",
+    avatarSize: "108px",
   },
   mint: {
     bg: "#f0fbf6",
@@ -54,6 +57,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "none",
+    avatarSize: "108px",
   },
   ocean: {
     bg: "#f0f5ff",
@@ -67,6 +71,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-aurora",
+    avatarSize: "108px",
   },
   sunset: {
     bg: "#fef7f0",
@@ -80,6 +85,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-gradient",
+    avatarSize: "108px",
   },
   lavender: {
     bg: "#f5f0ff",
@@ -93,6 +99,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-aurora",
+    avatarSize: "108px",
   },
   sand: {
     bg: "#faf5ee",
@@ -106,6 +113,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "none",
+    avatarSize: "108px",
   },
   midnight: {
     bg: "#0f172a",
@@ -119,6 +127,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-float",
+    avatarSize: "108px",
   },
   candy: {
     bg: "#fef2f8",
@@ -132,6 +141,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-gradient",
+    avatarSize: "108px",
   },
   sunflower: {
     bg: "#fefbf0",
@@ -145,6 +155,7 @@ export const themePresets = {
     font: sans,
     maxWidth: "560px",
     bgAnimation: "ll-anim-gradient",
+    avatarSize: "108px",
   },
 } satisfies Record<string, ThemeTokens>;
 

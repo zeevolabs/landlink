@@ -6,7 +6,7 @@ export const linkData = z.object({
   label: z.string().min(1),
   url: z.string().min(1),
   description: z.string().optional(),
-  variant: z.enum(["fill", "outline"]).optional(),
+  variant: z.enum(["fill", "outline", "featured"]).optional(),
   icon: z.string().optional(),
   locked: z.boolean().optional(),
   pin: z.string().optional(),
