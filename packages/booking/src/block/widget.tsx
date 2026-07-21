@@ -150,7 +150,10 @@ export function BookingWidget({ title, description, buttonText, featured, servic
         {buttonText}
       </button>
       {isOpen && (
+      <>
+      <div className="ll-booking-backdrop" onClick={close} aria-hidden="true" />
       <div className="ll-booking-panel" data-step={step}>
+        <div className="ll-booking-sheet-handle" aria-hidden="true" />
         <div className="ll-booking-panel-header">
           {step !== "confirmed" ? (
             <button type="button" className="ll-booking-back" onClick={goBack} aria-label="Voltar">
@@ -206,6 +209,7 @@ export function BookingWidget({ title, description, buttonText, featured, servic
           )}
         </div>
       </div>
+      </>
       )}
     </div>
   );

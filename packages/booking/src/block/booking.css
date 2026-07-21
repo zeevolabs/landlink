@@ -599,25 +599,69 @@
   }
 }
 
+/* Backdrop — hidden on desktop, visible on mobile */
+
+.ll-booking-backdrop {
+  display: none;
+}
+
+/* Sheet handle — hidden on desktop */
+
+.ll-booking-sheet-handle {
+  display: none;
+}
+
 /* Mobile bottom sheet */
 
 @media (max-width: 639px) {
+  .ll-booking-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.45);
+    animation: ll-booking-fade-in 0.25s ease;
+  }
+
   .ll-booking-panel {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    border-radius: var(--ll-radius) var(--ll-radius) 0 0;
-    max-height: 90vh;
-    max-height: 90dvh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    max-height: 88vh;
+    max-height: 88dvh;
     overflow-y: auto;
-    animation: ll-booking-sheet-up 0.2s ease;
+    animation: ll-booking-sheet-up 0.22s ease;
+  }
+
+  .ll-booking-sheet-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: color-mix(in srgb, var(--ll-fg) 18%, transparent);
+    border-radius: 2px;
+    margin: 10px auto 4px;
+    flex-shrink: 0;
   }
 
   .ll-booking-panel-body {
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
+
+  .ll-booking-services {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+@keyframes ll-booking-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes ll-booking-sheet-up {
